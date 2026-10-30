@@ -31,6 +31,13 @@ public final class LibraryDto {
         private VocabularyDto.WordRequest word;
     }
 
+    @Data
+    public static class NewWord {
+        private String category;
+        private String topic;
+        private VocabularyDto.WordRequest word;
+    }
+
     public record Count(String code, long total) { }
     @Data
     public static class Essay {

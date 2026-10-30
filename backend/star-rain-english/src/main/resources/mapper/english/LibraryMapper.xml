@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.english.library.mapper.LibraryMapper">
+  <select id="lockTopic" resultType="long">SELECT id FROM sr_english_taxonomy_term WHERE code=#{code} AND library_module='vocabulary' AND enabled=1 FOR UPDATE</select>
+  <select id="managedTheme" resultType="long">SELECT id FROM sr_english_vocabulary_theme WHERE layer=#{layer} ORDER BY id LIMIT 1 FOR UPDATE</select>
   <select id="overview" resultType="com.starrainnotes.english.library.dto.LibraryDto$Overview">
     SELECT (SELECT COUNT(*) FROM sr_english_vocabulary_word) vocabulary_records,
       (SELECT COUNT(*) FROM sr_english_vocabulary_mapping WHERE migration_status='confirmed') confirmed_records,

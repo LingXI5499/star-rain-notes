@@ -21,7 +21,7 @@ import { listRevisions,getRevision,saveRevision,restoreRevision } from '../api/e
 /**
  * 组件输入；通过 defineProps 建立。
  */
-const props = defineProps({ kind:{type:String,required:true}, id:{type:String,required:true}, rowVersion:{type:Number,required:true}, beforeAction:{type:Function,default:async()=>true} })
+const props = defineProps({ kind:{type:String,required:true}, id:{type:String,required:true}, rowVersion:{type:Number,required:true}, beforeAction:{type:Function,default:async()=>true}, readOnly:Boolean })
 /**
  * 事件发射器；通过 defineEmits 建立。
  */
@@ -55,7 +55,7 @@ watch(()=>[props.id,page.value,size.value],load,{immediate:true})
  * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
-async function snapshot() { if(busy.value)return;busy.value=true;error.value=''
+async function snapshot() { if(busy.value || props.readOnly)return;busy.value=true;error.value=''
  try { if(!await props.beforeAction())return;await saveRevision(props.kind,props.id,props.rowVersion,note.value);note.value='';page.value=1;await load() } catch(cause){error.value=errorMessage(cause)}finally{busy.value=false} }
 /**
  * compareVersions的处理函数。
@@ -72,7 +72,7 @@ async function compareVersions() { busy.value=true;error.value='';try { const re
  * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
-async function restore() { busy.value=true;error.value='';try { if(!await props.beforeAction())return;const value=await restoreRevision(props.kind,props.id,pendingRestore.value,props.rowVersion);emit('restored',value);pendingRestore.value=null;await load() }catch(cause){error.value=errorMessage(cause)}finally{busy.value=false} }
+async function restore() { if(props.readOnly)return;busy.value=true;error.value='';try { if(!await props.beforeAction())return;const value=await restoreRevision(props.kind,props.id,pendingRestore.value,props.rowVersion);emit('restored',value);pendingRestore.value=null;await load() }catch(cause){error.value=errorMessage(cause)}finally{busy.value=false} }
 /**
  * 选项的处理函数。
  * 主要协作：data.value.items.map。
@@ -89,9 +89,9 @@ function revisionTime(value) { if(!value)return '';const date=new Date(value);re
 defineExpose({snapshot,load})
 </script>
 <template><section class="english-rw__panel"><h2>历史版本</h2><p class="english-rw__muted">自动保存更新工作正文。保存版本会创建独立快照，恢复也会新增版本。</p>
- <div class="english-rw__actions"><label>版本说明 · 可选<input v-model="note" maxlength="500" placeholder="例如：调整结尾"></label><button class="english-rw__button" :disabled="busy" @click="snapshot">保存当前版本</button></div>
+ <div class="english-rw__actions"><label>版本说明 · 可选<input v-model="note" maxlength="500" placeholder="例如：调整结尾"></label><button class="english-rw__button" :disabled="busy || readOnly" @click="snapshot">保存当前版本</button></div>
  <p v-if="error" class="english-rw__error" role="alert">{{error}}</p>
- <div v-for="r in data.items" :key="r.revisionNo" class="english-rw__row"><div><strong>版本 {{r.revisionNo}}</strong><p class="english-rw__muted">{{revisionTime(r.createdAt)}} · {{r.changeNote || '手动保存'}}</p></div><button class="english-rw__button" :disabled="busy" @click="pendingRestore=r.revisionNo">恢复此版</button></div>
+ <div v-for="r in data.items" :key="r.revisionNo" class="english-rw__row"><div><strong>版本 {{r.revisionNo}}</strong><p class="english-rw__muted">{{revisionTime(r.createdAt)}} · {{r.changeNote || '手动保存'}}</p></div><button class="english-rw__button" :disabled="busy || readOnly" @click="pendingRestore=r.revisionNo">恢复此版</button></div>
  <p v-if="!data.items.length" class="english-rw__empty">尚未保存历史版本。</p>
  <PublicPagination :page="page" :page-size="size" :total="data.total" unit="个版本" @change="page=$event" @page-size="size=$event;page=1" />
  <div v-if="data.items.length" class="english-rw__actions"><PublicSelect v-model="left" label="旧版本" :options="options()" /><PublicSelect v-model="right" label="新版本" :options="options()" /><button class="english-rw__button" :disabled="busy || !left || !right || left===right" @click="compareVersions">对比两版</button></div>

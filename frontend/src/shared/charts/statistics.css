@@ -1,0 +1,14 @@
+.statistics-details{margin-top:16px;color:var(--text-secondary);font-size:12px;line-height:16px}
+.statistics-details summary{cursor:pointer;padding:8px 0;color:var(--primary)}
+.statistics-details summary:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.statistics-details__scroll{overflow:auto;max-height:320px}
+.statistics-details table{width:100%;border-collapse:collapse;font-size:12px;line-height:16px}
+.statistics-details caption{text-align:start;padding:8px;color:var(--text-secondary)}
+.statistics-details :is(td,th){padding:8px 12px;border-bottom:1px solid var(--border);text-align:start;overflow-wrap:anywhere}
+.statistics-details th{font-weight:600}
+.statistics-periods{display:flex;gap:4px;flex-wrap:wrap}
+.statistics-periods button{padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg-surface);color:var(--text-secondary);font:inherit;font-size:12px;line-height:16px;cursor:pointer}
+.statistics-periods button:hover,.statistics-periods button[aria-pressed=true]{background:var(--primary-soft);color:var(--primary);border-color:var(--primary)}
+.statistics-periods button:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.statistics-periods button:active{transform:scale(.98)}
+.statistics-periods button:disabled{opacity:.5;cursor:wait}

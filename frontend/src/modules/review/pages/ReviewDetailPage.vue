@@ -96,8 +96,7 @@ const isPending = computed(() => detail.value?.status === 'PENDING')
  * 该值由依赖自动重新计算，不作为独立可写状态维护。
  */
 const operationNeedsRecovery = computed(() => detail.value?.status === 'APPROVED'
-  && detail.value?.targetView?.viewType === 'TUTORIAL_OPERATION'
-  && ['PENDING', 'FAILED'].includes(detail.value?.targetView?.executionStatus))
+  && ((detail.value?.targetView?.viewType === 'TUTORIAL_OPERATION' && ['PENDING', 'FAILED'].includes(detail.value?.targetView?.executionStatus)) || (detail.value?.targetView?.viewType === 'ENGLISH_ESSAY' && detail.value?.targetView?.executionStatus==='PENDING')))
 
 /**
  * 加载当前操作。

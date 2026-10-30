@@ -179,7 +179,7 @@ onMounted(load)
           <RouterLink
             v-for="theme in group.items"
             :key="theme.id"
-            :to="contentPath(`/english/vocabulary/${theme.id}`)"
+            :to="contentPath(`/english/vocabulary/learn/${theme.id}`)"
             class="vocabulary-page__card"
           >
             <span class="vocabulary-page__card-name">{{ theme.name }}</span>

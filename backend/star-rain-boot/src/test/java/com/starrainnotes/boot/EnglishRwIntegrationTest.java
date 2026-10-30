@@ -97,13 +97,15 @@ class EnglishRwIntegrationTest extends MapperXmlIntegrationSupport {
      var ext=ReadingDto.Request.builder().bodyMarkdown("External article.").contentOrigin("EXTERNAL").build();
      var external=reading.create(ext);String externalId=external.getId().toString();assertThrows(ApiException.class,()->reading.setPublished(externalId,true,0L));
      ReadingDto.Rights rights=new ReadingDto.Rights();rights.setRightsStatus("CLEARED");rights.setRightsBasis("test fixture permission");ext.setRights(rights);ext.setRowVersion(0L);external=reading.update(externalId,ext);reading.setPublished(externalId,true,external.getRowVersion());
-     var writing=new WritingArticleServiceImpl(session.getMapper(WritingArticleMapper.class),metadata,taxonomy,actors,json,events);
+     var reviewApi=mock(com.starrainnotes.review.api.ReviewSubmissionApi.class);
+     var provider=mock(org.springframework.beans.factory.ObjectProvider.class);when(provider.getObject()).thenReturn(reviewApi);
+     var writing=new WritingArticleServiceImpl(session.getMapper(WritingArticleMapper.class),provider,metadata,taxonomy,actors,json,events);
      WritingArticleDto.Request w=new WritingArticleDto.Request();w.setBodyMarkdown("");w.setPrimaryTopicId(child);w.setKeywords(List.of("one","two"));
      var owned=writing.create(w);String wid=owned.getId().toString();assertEquals("PRIVATE",owned.getVisibility());assertThrows(ApiException.class,()->writing.complete(wid,0L));
      w.setBodyMarkdown("My original.");w.setRowVersion(0L);owned=writing.save(wid,w);assertThrows(ApiException.class,()->writing.save(wid,w));
      owned=writing.complete(wid,owned.getRowVersion());owned=writing.publish(wid,owned.getRowVersion(),true);assertNotNull(writing.getPublic(owned.getSlug()));
-     assertEquals(3,writing.snapshot(wid,request(owned.getRowVersion())).getRevisionNo());w.setBodyMarkdown("Second version.");w.setRowVersion(owned.getRowVersion());owned=writing.save(wid,w);
-     assertEquals(4,writing.snapshot(wid,request(owned.getRowVersion())).getRevisionNo());owned=writing.restore(wid,3,request(owned.getRowVersion()));assertEquals("My original.",owned.getBodyMarkdown());assertEquals(List.of("one","two"),owned.getKeywords());assertEquals(5,writing.revisions(wid,1,12).total());
+     assertEquals(3,writing.snapshot(wid,request(owned.getRowVersion())).getRevisionNo());var publishedVersion=owned.getRowVersion();w.setRowVersion(publishedVersion);assertThrows(ApiException.class,()->writing.save(wid,w));owned=writing.publish(wid,publishedVersion,false);w.setBodyMarkdown("Second version.");w.setRowVersion(owned.getRowVersion());owned=writing.save(wid,w);
+     assertEquals(4,writing.snapshot(wid,request(owned.getRowVersion())).getRevisionNo());owned=writing.restore(wid,3,request(owned.getRowVersion()));assertEquals("My original.",owned.getBodyMarkdown());assertEquals(List.of("one","two"),owned.getKeywords());assertEquals(5,writing.revisions(wid,1,12).total());owned=writing.complete(wid,owned.getRowVersion());owned=writing.publish(wid,owned.getRowVersion(),true);
      var other=CurrentActorApi.CurrentActor.builder().accountId(72L).roles(Set.of("USER")).permissions(Set.of()).build();when(actors.current()).thenReturn(other);
      assertThrows(ApiException.class,()->writing.get(wid));assertThrows(ApiException.class,()->writing.save(wid,w));assertThrows(ApiException.class,()->writing.revisions(wid,1,12));assertThrows(ApiException.class,()->writing.restore(wid,1,request(0L)));assertThrows(ApiException.class,()->writing.delete(wid));
      w.setBodyMarkdown("Private work.");w.setRowVersion(null);var privateArticle=writing.create(w);var completed=writing.complete(privateArticle.getId().toString(),0L);assertThrows(ApiException.class,()->writing.publish(privateArticle.getId().toString(),completed.getRowVersion(),true));
@@ -118,6 +120,25 @@ class EnglishRwIntegrationTest extends MapperXmlIntegrationSupport {
      when(actors.current()).thenReturn(adminActor);
      var historicalReading=revisions.restore(id,1,request(reading.get(id,true).getRowVersion()));
      assertEquals(child,historicalReading.getPrimaryTopicId());
+     // Exercise the actual essay SQL and frozen revisions only in this disposable schema.
+     var essayRequest=new WritingArticleDto.Request();essayRequest.setTitle("雨后");essayRequest.setBodyMarkdown("The rain stopped.\n\nWe set off.");essayRequest.setTranslationZhMarkdown("雨停了。\n\n我们出发。");
+     var essay=writing.create(essayRequest);String essayId=essay.getId().toString();
+     essay=writing.submit(essayId,essay.getRowVersion());assertEquals("PENDING",essay.getState());
+     assertEquals(1,writing.list(true,"雨后","PENDING",null,null,null,1,10).total());
+     essayRequest.setRowVersion(essay.getRowVersion());assertThrows(ApiException.class,()->writing.save(essayId,essayRequest));assertThrows(ApiException.class,()->writing.delete(essayId));
+     var submitted=org.mockito.ArgumentCaptor.forClass(com.starrainnotes.review.api.dto.ReviewSubmissionCommand.class);verify(reviewApi).submit(submitted.capture());
+     var target=com.starrainnotes.review.api.ReviewTargetRef.builder().targetModule("ENGLISH").targetType("ESSAY").targetId(essay.getId()).revisionRef(submitted.getValue().getTargetRevisionRef()).build();
+     var decision=com.starrainnotes.review.api.ReviewDecisionContext.builder().target(target).applicantAccountId(adminActor.getAccountId()).build();
+     var handler=new com.starrainnotes.english.writing.article.service.impl.EssayReviewHandler(session.getMapper(WritingArticleMapper.class),metadata,json,events);
+     handler.onRejected(decision);assertEquals("REJECTED",writing.get(essayId).getState());
+     essay=writing.submit(essayId,writing.get(essayId).getRowVersion());
+     when(reviewApi.findActivePending(any(),eq("english.essay.publish"))).thenReturn(Optional.of(com.starrainnotes.review.api.ReviewSummary.builder().reviewRequestId(99L).build()));
+     essay=writing.cancelReview(essayId,essay.getRowVersion());assertEquals("DRAFT",essay.getState());verify(reviewApi).cancelByApplicant(99L,adminActor.getAccountId());
+     essay=writing.submit(essayId,essay.getRowVersion());target.setRevisionRef(Long.toString(writing.revisions(essayId,1,10).items().getFirst().getRevisionNo()));
+     handler.onApproved(decision);essay=writing.get(essayId);assertEquals("PUBLIC",essay.getVisibility());assertNotNull(writing.getPublic(essay.getSlug()));
+     assertEquals(1,writing.list(true,"雨后","PUBLISHED",null,null,null,1,10).total());assertEquals(0,writing.list(true,"雨后","PENDING",null,null,null,1,10).total());
+     handler.onApproved(decision);assertEquals(essay.getRowVersion(),writing.get(essayId).getRowVersion());
+     essay=writing.publish(essayId,essay.getRowVersion(),false);assertEquals("DRAFT",essay.getState());writing.delete(essayId);assertThrows(ApiException.class,()->writing.get(essayId));
      session.rollback();
     } finally { connection.setCatalog(original);if(created)admin.execute("DROP DATABASE "+schema); }
    }

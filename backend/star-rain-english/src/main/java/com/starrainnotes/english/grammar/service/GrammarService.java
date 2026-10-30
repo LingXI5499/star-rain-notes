@@ -22,6 +22,8 @@ import com.starrainnotes.english.grammar.dto.GrammarDto.SectionRequest;
  * 声明业务服务的输入和输出，使接入层与具体实现分离；状态转换和数据写入由实现类处理。
  */
 public interface GrammarService {
+    void reorderSections(java.util.List<String> ids);
+    void reorderLessons(String sectionId, java.util.List<String> ids);
 
     /**
      * curriculum处理入口。

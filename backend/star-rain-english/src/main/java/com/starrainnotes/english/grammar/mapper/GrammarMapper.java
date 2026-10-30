@@ -21,6 +21,10 @@ import org.apache.ibatis.annotations.Param;
  */
 @Mapper
 public interface GrammarMapper {
+    Course lockCourse();
+    int deleteLessonsInSection(@Param("sectionId") long sectionId);
+    int orderSection(@Param("id") long id, @Param("sortOrder") int sortOrder);
+    int orderLesson(@Param("id") long id, @Param("sectionId") long sectionId, @Param("sortOrder") int sortOrder);
     /**
      * course处理入口。
      *

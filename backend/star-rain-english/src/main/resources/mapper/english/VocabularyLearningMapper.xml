@@ -34,6 +34,22 @@
       绑定参数：f.themeId、f.q、f.mastery、accountId、f.direction、f.lastRating；参数含义参见 Mapper 方法注释。
     -->
     <sql id="filter">
+        <if test="f.learnableOnly">AND TRIM(w.translation) != ''</if>
+        <if test="f.libraryStatus != null and f.libraryStatus != ''">
+            AND EXISTS (SELECT 1 FROM sr_english_vocabulary_mapping vm WHERE vm.word_id=w.id AND vm.migration_status=#{f.libraryStatus})
+        </if>
+        <if test="(f.category != null and f.category != '') or (f.topic != null and f.topic != '')">
+            AND EXISTS (
+                SELECT 1 FROM sr_english_vocabulary_topic vt
+                JOIN sr_english_taxonomy_term child ON child.id=vt.term_id
+                JOIN sr_english_taxonomy_term parent ON parent.id=child.parent_id
+                JOIN sr_english_vocabulary_mapping vm ON vm.word_id=vt.word_id
+                WHERE vt.word_id=w.id AND child.library_module='vocabulary' AND parent.library_module='vocabulary'
+                    AND child.enabled=1 AND parent.enabled=1 AND vm.migration_status='confirmed'
+                    <if test="f.category != null and f.category != ''">AND parent.code=#{f.category}</if>
+                    <if test="f.topic != null and f.topic != ''">AND child.code=#{f.topic}</if>
+            )
+        </if>
         <!--
           条件 f.themeId != null 成立时才输出此段 SQL。
         -->

@@ -9,12 +9,35 @@
  */
 
 
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { errorMessage } from '../../../shared/http'
 import { accountPath } from '../../../shared/viewMode'
 import { dateLabel, postStatusLabel } from '../../blog/support/display'
 import { getAdminSiteDashboard } from '../api/siteApi'
+import { useAuthStore } from '../../account/stores/authStore'
+import { getTrafficTrend } from '../../analytics/api/analyticsApi'
+import ChartPanel from '../../../shared/charts/ChartPanel.vue'
+import TrafficTrendPanel from '../../../shared/charts/TrafficTrendPanel.vue'
+import { recentRange, rankingOption } from '../../../shared/charts/statistics'
+import { useStatisticsResource } from '../../../shared/charts/useStatisticsResource'
+import '../../../shared/charts/statistics.css'
+
+const auth = useAuthStore()
+const canReadAnalytics = computed(() => auth.canManage('analytics:read'))
+const trend = useStatisticsResource(getTrafficTrend)
+const period = ref(7), trafficRange = ref(recentRange(7))
+function loadTrend(days = period.value) {
+  period.value = days; trafficRange.value = recentRange(days)
+  return trend.load({ ...trafficRange.value })
+}
+const contentRows = computed(() => [
+  { name: '教程', value: contentCounts.value.tutorials, module: 'TUTORIAL' },
+  { name: '章节', value: contentCounts.value.chapters, module: 'TUTORIAL' },
+  { name: '博客', value: contentCounts.value.blogPosts, module: 'BLOG' },
+  { name: '作品', value: contentCounts.value.portfolioProjects, module: 'PORTFOLIO' },
+].filter(row => !degradedModules.value.includes(row.module)))
+const contentOption = computed(() => rankingOption(contentRows.value, '内容数量'))
 
 // Site 汇总来自各模块 API 的统计，单个模块失败时保留其余数据。
 /**
@@ -136,7 +159,7 @@ async function load() {
 /**
  * 组件挂载后执行初始化工作，依赖此时已存在的 DOM 或初始状态。
  */
-onMounted(load)
+onMounted(() => { void load(); if (canReadAnalytics.value) void loadTrend() })
 </script>
 
 <template>
@@ -189,6 +212,15 @@ onMounted(load)
 
     <p class="tag-admin__note">待审核留言 {{ pendingMessages }} 条 · <RouterLink :to="accountPath('/messages/manage')">进入留言管理</RouterLink></p>
 
+    <div class="dashboard__charts" :class="{ 'dashboard__charts--single': !canReadAnalytics }">
+      <TrafficTrendPanel v-if="canReadAnalytics" :rows="trend.data.value || []" :range="trafficRange" :loading="trend.loading.value" :error="trend.error.value" @retry="loadTrend()">
+        <template #actions><div class="statistics-periods" aria-label="趋势时间范围"><button v-for="days in [7,30]" :key="days" type="button" :aria-pressed="period===days" :disabled="trend.loading.value" @click="loadTrend(days)">近 {{ days }} 天</button></div><RouterLink :to="accountPath('/analytics')">详细统计 →</RouterLink></template>
+      </TrafficTrendPanel>
+      <ChartPanel title="内容数量" :description="degradedModules.length ? '仅展示可读取模块的数量，包含草稿' : '各类型当前总量，包含草稿'" :option="contentOption" :loading="loading" :error="error" :empty="!contentRows.some(row=>row.value>0)" empty-text="暂无可展示的内容数量。" @retry="load">
+        <details class="statistics-details"><summary>查看数量明细</summary><table><thead><tr><th scope="col">类型</th><th scope="col">数量</th></tr></thead><tbody><tr v-for="row in contentRows" :key="row.name"><th scope="row">{{row.name}}</th><td>{{row.value}}</td></tr></tbody></table></details>
+      </ChartPanel>
+    </div>
+
     <h2 class="dashboard__section">最近内容</h2>
     <div class="table-scroll">
       <table class="dashboard__table">
@@ -218,6 +250,10 @@ onMounted(load)
 </template>
 
 <style scoped>
+.dashboard__charts{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:24px;margin:24px 0}
+.dashboard__charts--single{grid-template-columns:minmax(0,1fr)}
+.dashboard__charts a{font-size:12px;line-height:16px;color:var(--primary)}
+@media(max-width:1100px){.dashboard__charts{grid-template-columns:minmax(0,1fr)}}
 /**
  * 组件局部样式：布局、状态和断点分别在以下规则处说明。
  */

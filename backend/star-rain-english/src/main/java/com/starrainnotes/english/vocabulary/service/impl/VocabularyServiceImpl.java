@@ -370,7 +370,7 @@ public class VocabularyServiceImpl implements VocabularyService {
         word.setPartOfSpeech(empty(request.getPartOfSpeech()));
         word.setPhoneticUs(empty(request.getPhoneticUs()));
         word.setPhoneticUk(empty(request.getPhoneticUk()));
-        word.setTranslation(request.getTranslation().trim());
+        word.setTranslation(empty(request.getTranslation()).trim());
         word.setSceneMeaning(trimToNull(request.getSceneMeaning()));
         word.setInflections(trimToNull(request.getInflections()));
         word.setExamples(request.getExamples() == null || request.getExamples().isBlank() ? "[]" : request.getExamples());
@@ -402,11 +402,10 @@ public class VocabularyServiceImpl implements VocabularyService {
      * @param request 本次操作的请求参数对象；类型为 <code>WordRequest</code>
      */
     private void validateWord(WordRequest request) {
-        if (request == null || isBlank(request.getThemeId()) || isBlank(request.getWord())
-                || isBlank(request.getTranslation())) {
-            throw new VocabularyContentInvalidException("请填写主题、单词和释义");
+        if (request == null || isBlank(request.getThemeId()) || isBlank(request.getWord())) {
+            throw new VocabularyContentInvalidException("请选择主题并填写单词");
         }
-        if (request.getWord().length() > 200 || request.getTranslation().length() > 1000) {
+        if (request.getWord().length() > 200 || (request.getTranslation() != null && request.getTranslation().length() > 1000)) {
             throw new VocabularyContentInvalidException("单词或释义过长");
         }
         if (request.getSceneMeaning() != null && request.getSceneMeaning().length() > 1000) {

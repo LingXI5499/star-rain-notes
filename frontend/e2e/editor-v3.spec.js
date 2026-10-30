@@ -376,13 +376,12 @@ test('English and Chinese editors isolate focus and import suspends existing aut
   await page.goto('/english/writing/articles/2/edit')
   const editors = page.locator('.markdown-editor')
   await expect(editors).toHaveCount(2)
-  const en = editors.nth(0),
-    zh = editors.nth(1)
+  const zh = editors.nth(0),
+    en = editors.nth(1)
   await expect(en.getByRole('menubar').getByRole('menuitem', { name: '段落', exact: true })).toBeEnabled()
   await en.locator('.vditor-ir p').click()
   await page.keyboard.press('Alt+2')
   await expect(en.locator('.vditor-ir h2')).toContainText('English body')
-  await page.getByText('中文译文 · 可选', { exact: true }).click()
   await expect(zh.locator('.vditor-ir p')).toContainText('中文正文')
   await expect(zh.locator('.vditor-ir h2')).toHaveCount(0)
   await expect.poll(() => fixture.writingSaves.length).toBe(1)

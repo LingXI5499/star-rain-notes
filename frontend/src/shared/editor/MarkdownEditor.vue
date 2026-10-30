@@ -30,6 +30,9 @@ import EditorRecovery from './EditorRecovery.vue'
 import EditorDiagnostics from './EditorDiagnostics.vue'
 import EditorFileTools from './EditorFileTools.vue'
 import EditorMenuBar from './EditorMenuBar.vue'
+import EditorOutline from './EditorOutline.vue'
+import EditorLayoutControls from './EditorLayoutControls.vue'
+import {outlinePreferenceKey,readOutlinePreference,saveOutlinePreference,readLayoutPreference,saveLayoutPreference,countEditorText} from './editorViewState'
 import { applyManualTheme } from '../theme/manualTheme'
 
 /*
@@ -69,6 +72,8 @@ const props = defineProps({
   pickImage: { type: Function, default: null },
   editorContext: { type: Object, default: null },
   readOnly: { type: Boolean, default: false },
+  outlineDefault: { type: Boolean, default: true },
+  browserRecovery: { type: Boolean, default: true },
 })
 
 /**
@@ -85,6 +90,52 @@ const editorReady = ref(false), workbench = ref(null)
 const editorShell = ref(null), menuBar = ref(null), recovery = ref(null), diagnostics = ref(null), fileTools = ref(null)
 const fullscreen = ref(false), editorTheme = ref(document.documentElement.dataset.theme || 'light')
 const menuNotice = ref('')
+const outlineVisible=ref(props.outlineDefault)
+const outlineKey=computed(()=>outlinePreferenceKey(props.editorContext))
+watch([outlineKey,()=>props.outlineDefault],()=>{outlineVisible.value=readOutlinePreference(outlineKey.value,props.outlineDefault)},{immediate:true})
+function toggleOutline(){outlineVisible.value=!outlineVisible.value;saveOutlinePreference(outlineKey.value,outlineVisible.value)}
+const layout = ref(readLayoutPreference(outlineKey.value))
+watch(outlineKey, () => { stopResize(); layout.value = readLayoutPreference(outlineKey.value) })
+const workspace = ref(null)
+let resizeTarget = null
+function saveLayout() { saveLayoutPreference(outlineKey.value, layout.value) }
+function setCanvasWidth(width) { layout.value.canvasWidth = width; saveLayout() }
+function setOutlineWidth(width) {
+  const available = workspace.value?.getBoundingClientRect().width || 1024
+  layout.value.outlineWidth = Math.round(Math.max(160, Math.min(480, available * .45, width)))
+}
+function moveResize(event) {
+  setOutlineWidth(event.clientX - workspace.value.getBoundingClientRect().left)
+}
+function stopResize() {
+  if (!resizeTarget) return
+  resizeTarget.removeEventListener('pointermove', moveResize)
+  resizeTarget.removeEventListener('pointerup', stopResize)
+  resizeTarget.removeEventListener('pointercancel', stopResize)
+  resizeTarget.removeEventListener('lostpointercapture', stopResize)
+  resizeTarget = null
+  saveLayout()
+}
+function startResize(event) {
+  if (event.button !== 0) return
+  event.preventDefault()
+  resizeTarget = event.currentTarget
+  resizeTarget.setPointerCapture(event.pointerId)
+  resizeTarget.addEventListener('pointermove', moveResize)
+  resizeTarget.addEventListener('pointerup', stopResize)
+  resizeTarget.addEventListener('pointercancel', stopResize)
+  resizeTarget.addEventListener('lostpointercapture', stopResize)
+}
+function resizeKey(event) {
+  if (!['ArrowLeft','ArrowRight','Home','End'].includes(event.key)) return
+  event.preventDefault()
+  setOutlineWidth(event.key === 'Home' ? 160 : event.key === 'End' ? 480 : layout.value.outlineWidth + (event.key === 'ArrowRight' ? 16 : -16))
+  saveLayout()
+}
+onBeforeUnmount(stopResize)
+let normalizedRaw,normalizedSource,lastInputSource
+function normalized(value){const raw=String(value ?? '');if(raw!==normalizedRaw){normalizedRaw=raw;normalizedSource=normalizeVditorMarkdown(raw)}return normalizedSource}
+
 const fullscreenOwner = Symbol('markdown-editor')
 let background = null, backgroundInert = false, pageScroll = [], fullscreenGeneration = 0
 let themeKey = 'admin-theme'
@@ -134,6 +185,7 @@ function menuAction(id) {
     else if (id === 'copy-md') void fileTools.value?.exportFile('copy')
     else if (id === 'import') fileTools.value?.openImport()
     else if (id === 'recovery') void recovery.value?.inspect()
+    else if (id === 'toggle-outline') toggleOutline()
     else if (id === 'diagnostics') diagnostics.value?.toggle()
     else if (id === 'shortcuts') workbench.value?.openHelp()
     else if (id === 'export-help') fileTools.value?.showHelp()
@@ -145,7 +197,7 @@ function menuAction(id) {
     else if (id === 'math' && !props.readOnly && adapter.restore()) adapter.insert('\n$$\nx^2\n$$\n')
   } catch (error) { menuNotice.value = error.message }
 }
-const longDocument = computed(() => props.modelValue.length >= 100000)
+const longDocument = computed(() => (props.modelValue ?? '').length >= 100000)
 const adapter = createVditorAdapter(() => vditor, () => host.value)
 let workbenchRange = null
 async function applyLocalContent(value) {
@@ -558,7 +610,7 @@ function watchTheme() {
  * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
  */
 let imageNormalizationTimer
-let knownImageUrls=new Set(markdownImages(props.modelValue).map(image=>image.url))
+let knownImageUrls=new Set(markdownImages(props.modelValue ?? '').map(image=>image.url))
 function queueInsertedImages(source){
   clearTimeout(imageNormalizationTimer)
   if(props.readOnly || !canUploadImages.value || uploadingImages.value)return
@@ -704,7 +756,6 @@ function buildToolbar() {
     }] : []),
     'link',
     '|',
-    'outline',
     'edit-mode',
     { name: 'editor-fullscreen', tip: '全屏', hotkey: '⌘`', icon: '<span aria-hidden="true">⛶</span>', click: () => { void toggleFullscreen() } },
   ]
@@ -714,7 +765,7 @@ function buildToolbar() {
 const TOOLBAR_ITEM_COUNT = buildToolbar().filter((item) => item !== '|').length
 defineExpose({
   TOOLBAR_ITEM_COUNT,
-  getMarkdown: () => (ready && vditor ? normalizeVditorMarkdown(vditor.getValue()) : props.modelValue),
+  getMarkdown: () => (ready && vditor ? normalized(vditor.getValue()) : (props.modelValue ?? '')),
 })
 
 /* ---------------------------------------------------------------
@@ -774,10 +825,10 @@ async function mountEditor() {
     // Vditor consumes Escape before it bubbles; use its public callback after hints are closed.
     esc: () => { if (fullscreen.value) void toggleFullscreen() },
     /* 左侧文档大纲（V1 的「像阅读页目录一样」） */
-    outline: { enable: true, position: 'left' },
+    outline: { enable: false, position: 'left' },
     toolbar: buildToolbar(),
     input: (value) => {
-      if (!suppressing) { const source=normalizeVditorMarkdown(value);emit('update:modelValue',source);queueInsertedImages(source) }
+      if (!suppressing) { const source=normalized(value);lastInputSource=source;emit('update:modelValue',source);queueInsertedImages(source) }
     },
     after: () => {
       ready = true
@@ -808,7 +859,8 @@ onMounted(() => {
 })
 watch(() => props.readOnly, value => { if (ready) { if (value) vditor.disabled(); else vditor.enable() } })
 watch(() => JSON.stringify([props.editorContext?.accountId,props.editorContext?.module,props.editorContext?.documentId,props.editorContext?.field]), () => {
-  clearTimeout(imageNormalizationTimer);knownImageUrls=new Set(markdownImages(props.modelValue).map(image=>image.url))
+  lastInputSource=undefined
+  clearTimeout(imageNormalizationTimer);knownImageUrls=new Set(markdownImages(props.modelValue ?? '').map(image=>image.url))
   imageOperation++;imageUploadController?.abort();uploadingImages.value=false;failedImages.value=[];imagePercent.value=null;imageError.value='';imageStatus.value='';savedImageRange=null;workbenchRange=null
   tablePickerOpen.value=false;codeGroupOpen.value=false;adapter.reset();workbench.value?.hide()
   menuBar.value?.close()
@@ -823,9 +875,9 @@ watch(() => JSON.stringify([props.editorContext?.accountId,props.editorContext?.
 watch(
   () => props.modelValue,
   (value) => {
-    if (!vditor || !ready) return
+    if (!vditor || !ready || value===lastInputSource) return
     const current = vditor.getValue()
-    if (value !== current && value !== normalizeVditorMarkdown(current)) {
+    if (value !== current && value !== normalized(current)) {
       imageOperation += 1
       clearTimeout(imageNormalizationTimer);knownImageUrls=new Set(markdownImages(value || '').map(image=>image.url))
       imageUploadController?.abort()
@@ -871,35 +923,29 @@ onBeforeUnmount(() => {
  * 单词数量；通过 computed 建立。
  * 该值由依赖自动重新计算，不作为独立可写状态维护。
  */
-const wordCount = computed(() => {
-  const text = String(props.modelValue ?? '').trim()
-  if (!text) return 0
-  /* 中日韩字符按字计，其余按空白分词计 —— 与前台阅读页的字数口径一致 */
-  const cjk = (text.match(/[\u4e00-\u9fff\u3400-\u4dbf]/g) || []).length
-  const words = (text.replace(/[\u4e00-\u9fff\u3400-\u4dbf]/g, ' ').match(/[A-Za-z0-9_'-]+/g) || []).length
-  return cjk + words
-})
-
-/**
- * line数量；通过 computed 建立。
- * 该值由依赖自动重新计算，不作为独立可写状态维护。
- */
-const lineCount = computed(() => (props.modelValue ? String(props.modelValue).split('\n').length : 0))
+const statistics=ref({words:0,lines:0})
+let statisticsTimer
+watch(()=>props.modelValue,value=>{clearTimeout(statisticsTimer);statisticsTimer=setTimeout(()=>{statistics.value=countEditorText(value)},300)},{immediate:true})
+onBeforeUnmount(()=>clearTimeout(statisticsTimer))
 </script>
 
 <template>
   <Teleport to="body" :disabled="!fullscreen">
   <div ref="editorShell" class="markdown-editor" :class="{'markdown-editor--fullscreen':fullscreen}" :role="fullscreen?'dialog':undefined" :aria-modal="fullscreen?true:undefined" :aria-label="fullscreen?'全屏文档编辑器':undefined" @keydown.esc="editorEscape">
-    <EditorMenuBar ref="menuBar" :ready="editorReady" :read-only="readOnly" :can-upload="canUploadImages" :can-pick="Boolean(pickImage)" :busy="fileTools?.busy || uploadingImages" :fullscreen="fullscreen" :mode="workbench?.documentTools?.mode || 'ir'" :theme="editorTheme" :heading-keys="workbench?.keys" @capture="adapter.remember()" @action="menuAction" />
+    <EditorMenuBar ref="menuBar" :ready="editorReady" :read-only="readOnly" :can-upload="canUploadImages" :can-pick="Boolean(pickImage)" :busy="fileTools?.busy || uploadingImages" :fullscreen="fullscreen" :outline-visible="outlineVisible" :can-recover="browserRecovery" :mode="workbench?.documentTools?.mode || 'ir'" :theme="editorTheme" :heading-keys="workbench?.keys" @capture="adapter.remember()" @action="menuAction" />
     <div class="markdown-editor__panels">
     <EditorWorkbench ref="workbench" compact :adapter="adapter" :host="host" :ready="editorReady" :model-value="modelValue" :context="editorContext" :read-only="readOnly" :can-upload="canUploadImages" :can-pick="Boolean(pickImage)" :pick-image="pickImage ? pickPublicImage : null" :get-media="getMedia" @action="workbenchAction" />
-    <EditorRecovery ref="recovery" compact :context="editorContext" :source="modelValue" :read-only="readOnly || !editorReady" @restore="applyLocalContent" />
+    <EditorRecovery v-if="browserRecovery" ref="recovery" compact :context="editorContext" :source="modelValue" :read-only="readOnly || !editorReady" @restore="applyLocalContent" />
     <p v-if="longDocument" role="status">正文超过 10 万字符，采用源码视图减少大规模渲染开销；阅读效果请使用预览。保存格式仍为 Markdown。</p>
     <EditorDiagnostics ref="diagnostics" compact :context="editorContext" :source="modelValue" :get-media="getMedia" />
     <EditorFileTools ref="fileTools" compact :adapter="adapter" :context="editorContext" :ready="editorReady" :read-only="readOnly" @apply="applyLocalContent" />
     </div>
     <input ref="imageInput" class="markdown-editor__file-input" type="file" :accept="IMAGE_ACCEPT" multiple aria-label="上传正文图片" @change="onImageFiles" />
-    <div ref="host" class="markdown-editor__host" />
+    <div ref="workspace" class="markdown-editor__workspace" :class="{'markdown-editor__workspace--outline':outlineVisible}" :style="{'--editor-outline-width':layout.outlineWidth+'px','--editor-canvas-width':layout.canvasWidth ? layout.canvasWidth+'px' : '100%'}">
+      <EditorOutline v-if="outlineVisible" :source="modelValue" :adapter="adapter" :host="host" :ready="editorReady" @close="toggleOutline" @navigate="workbench?.documentTools?.syncMode()"/>
+      <div v-if="outlineVisible" class="markdown-editor__divider" role="separator" tabindex="0" aria-label="调整大纲宽度" aria-orientation="vertical" aria-valuemin="160" aria-valuemax="480" :aria-valuenow="layout.outlineWidth" title="拖动调整大纲宽度，双击恢复默认" @pointerdown="startResize" @keydown="resizeKey" @dblclick="layout.outlineWidth=224;saveLayout()" />
+      <div ref="host" class="markdown-editor__host" />
+    </div>
     <p v-if="imageStatus" class="markdown-editor__image-status" role="status">{{ imageStatus }}</p>
     <progress v-if="uploadingImages" :value="imagePercent ?? undefined" max="100" aria-label="图片上传进度" />
     <div v-if="failedImages.length"><p>失败文件保留在当前页面。超时或网络中断时，请先核对媒体库，避免重复上传。</p><button type="button" :disabled="uploadingImages || readOnly" @click="uploadImageFiles([...failedImages])">已核对媒体库，重试失败图片</button></div>
@@ -953,8 +999,9 @@ const lineCount = computed(() => (props.modelValue ? String(props.modelValue).sp
     </div>
 
     <div v-if="!loadingError" class="markdown-editor__footer">
-      <span>{{ wordCount }} 字</span>
-      <span>{{ lineCount }} 行</span>
+      <span>{{ statistics.words }} 字</span>
+      <span>{{ statistics.lines }} 行</span>
+      <EditorLayoutControls :width="layout.canvasWidth" @update:width="setCanvasWidth" />
     </div>
   </div>
   </Teleport>
@@ -984,6 +1031,8 @@ const lineCount = computed(() => (props.modelValue ? String(props.modelValue).sp
  * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
  */
 .markdown-editor {
+  min-width: 0;
+  container-type: inline-size;
   position: relative;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
@@ -1257,6 +1306,20 @@ const lineCount = computed(() => (props.modelValue ? String(props.modelValue).sp
  */
 .markdown-editor__dialog-spacer { flex: 1; }
 
+.markdown-editor__workspace{display:grid;grid-template-columns:minmax(0,1fr);min-width:0;min-height:0;isolation:isolate}
+.markdown-editor__workspace--outline{grid-template-columns:clamp(160px,var(--editor-outline-width),45%) 8px minmax(0,1fr)}
+.markdown-editor__workspace>.markdown-editor__host{min-width:0;min-height:0}
+.markdown-editor__divider{cursor:col-resize;touch-action:none;background:var(--bg-subtle);position:relative}
+.markdown-editor__divider::after{content:'';position:absolute;inset:0 2px;background:var(--border)}
+.markdown-editor__divider:hover::after,.markdown-editor__divider:focus-visible::after{background:var(--primary)}
+.markdown-editor__divider:focus-visible{outline:2px solid var(--primary);outline-offset:-2px}
+.markdown-editor--fullscreen .markdown-editor__workspace{flex:1;min-height:0}
+.markdown-editor__host :deep(.vditor-ir),.markdown-editor__host :deep(.vditor-wysiwyg),.markdown-editor__host :deep(.vditor-sv){box-sizing:border-box;padding-inline:max(24px,calc((100% - var(--editor-canvas-width))/2)) !important}
+@container(max-width:640px){
+  .markdown-editor__workspace--outline{grid-template-columns:minmax(0,1fr);grid-template-rows:160px minmax(0,1fr)}
+  .markdown-editor__divider{display:none}
+  .markdown-editor__host :deep(.vditor-ir),.markdown-editor__host :deep(.vditor-wysiwyg),.markdown-editor__host :deep(.vditor-sv){padding-inline:16px !important}
+}
 /* 窄屏：工具栏横向滚动（不换行，避免吃掉正文高度），大纲收起 */
 /**
  * 响应式或设备条件：(max-width: 720px)；仅在该条件成立时覆盖基础样式。

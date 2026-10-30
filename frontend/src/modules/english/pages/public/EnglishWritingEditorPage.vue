@@ -21,6 +21,7 @@ import { errorMessage, get, post, put, del } from '../../../../shared/http'
 import { useAuthStore } from '../../../account/stores/authStore'
 import EnglishTaxonomyFields from '../../components/EnglishTaxonomyFields.vue'
 import EnglishBilingualProse from '../../components/EnglishBilingualProse.vue'
+import EnglishArticleParallel from '../../components/EnglishArticleParallel.vue'
 import EnglishRevisionPanel from '../../components/EnglishRevisionPanel.vue'
 import { createWriting as legacyCreateWriting,getWriting as legacyGetWriting,saveWriting as legacySaveWriting,completeWriting as legacyCompleteWriting,publishWriting as legacyPublishWriting,deleteWriting as legacyDeleteWriting } from '../../api/englishRwApi'
 import { createWritingAutosave } from '../../lib/writingAutosave'
@@ -51,7 +52,7 @@ async function saveConfirmedRecovery(){syncEditors();await nextTick();if(!autosa
  * article；通过 ref 建立。
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
  */
-const article=ref(null),form=ref({}),loading=ref(true),error=ref(''),status=ref('saved'),busy=ref(false),tab=ref('edit'),mode=ref('EN'),remote=ref(null),deleteOpen=ref(false),keywords=ref('')
+const article=ref(null),form=ref({}),loading=ref(true),error=ref(''),status=ref('saved'),busy=ref(false),tab=ref('edit'),mode=ref('BOTH'),remote=ref(null),deleteOpen=ref(false)
 let autosave,initializing=false,generation=0
 /**
  * can发布；通过 computed 建立。
@@ -70,13 +71,13 @@ const statusLabel=computed(()=>({dirty:'等待保存',saving:'正在保存…',s
  * @param value 值；默认值、解构字段与可选参数见函数签名。
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
-async function accept(value) { initializing=true;article.value=value;acceptedWriting.value={...value};localRecoveryPaused.value=false;form.value={...value};keywords.value=(value.keywords||[]).join(', ');await nextTick();initializing=false }
+async function accept(value) { initializing=true;article.value=value;acceptedWriting.value={...value};localRecoveryPaused.value=false;form.value={...value,bodyMarkdown:value.bodyMarkdown ?? '',translationZhMarkdown:value.translationZhMarkdown ?? ''};await nextTick();initializing=false }
 /**
  * 本次提交的数据的处理函数。
  * 主要协作：.filter、.map、keywords.value.split、s.trim。
  * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
  */
-function payload() { return {...form.value,rowVersion:article.value.rowVersion,keywords:keywords.value.split(/[,，]/).map(s=>s.trim()).filter(Boolean)} }
+function payload() { return {...form.value,rowVersion:article.value.rowVersion} }
 /**
  * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
  */
@@ -93,7 +94,7 @@ watch(()=>[route.params.id,route.path.endsWith('/revisions')],async()=>{
 /**
  * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
  */
-watch([form,keywords],()=>{if(!initializing && article.value)autosave?.change()},{deep:true})
+watch(form,()=>{if(!initializing && article.value)autosave?.change()},{deep:true})
 /**
  * 同步Editors。
  * 主要协作：englishEditor.value.getMarkdown、chineseEditor.value.getMarkdown、autosave.change。
@@ -173,15 +174,16 @@ onBeforeUnmount(()=>{generation++;autosave?.dispose();window.removeEventListener
 <template><main class="english-rw"><RouterLink :to="writingHome()">← {{essay?'随笔管理':'我的写作'}}</RouterLink>
  <p v-if="loading" class="english-rw__empty">正在准备编辑器…</p><p v-if="error" class="english-rw__error" role="alert">{{error}}</p>
  <template v-if="!loading && article"><header class="english-rw__hero"><div><p class="public-eyebrow">{{essay?'ESSAYS · 记录经历与思考':'MY WRITING · 自主表达'}}</p><h1>{{form.title || 'Untitled Article'}}</h1><p role="status">{{statusLabel}} · {{article.visibility==='PUBLIC'?'已公开':'仅自己可见'}} · {{article.state==='COMPLETED'?'已完成':'草稿'}}</p></div><div class="english-rw__actions"><button class="english-rw__button" :disabled="busy || status==='conflict'" @click="localRecoveryPaused ? saveConfirmedRecovery() : flush()">{{ localRecoveryPaused ? '确认保存恢复稿' : '保存草稿' }}</button><button class="english-rw__button english-rw__button--primary" :disabled="busy || status==='conflict'" @click="action('complete')">{{essay?'完成随笔':'完成写作'}}</button><button v-if="canPublish" class="english-rw__button" :disabled="busy || status==='conflict'" @click="action(article.visibility==='PUBLIC'?'withdraw':'publish')">{{article.visibility==='PUBLIC'?'撤回公开':'公开原创'}}</button></div></header>
- <section v-if="status==='conflict' || status==='error'" class="english-rw__panel"><h2>当前草稿仍保留在编辑框</h2><p class="english-rw__muted">读取服务端内容后核对，再决定如何合并。</p><div class="english-rw__actions"><button v-if="status==='error'" class="english-rw__button" @click="retrySave">重试保存</button><button class="english-rw__button" @click="loadRemote">读取服务端版本</button></div><div v-if="remote"><h3>服务端版本 · {{remote.title}}</h3><p v-if="remote.summary">{{remote.summary}}</p><p v-if="remote.keywords?.length" class="english-rw__muted">关键词：{{remote.keywords.join('、')}}</p><pre class="rw-writing__remote">{{remote.bodyMarkdown}}</pre><button class="english-rw__button" @click="merge">确认按当前草稿合并保存</button></div></section>
+ <section v-if="status==='conflict' || status==='error'" class="english-rw__panel"><h2>当前草稿仍保留在编辑框</h2><p class="english-rw__muted">读取服务端内容后核对，再决定如何合并。</p><div class="english-rw__actions"><button v-if="status==='error'" class="english-rw__button" @click="retrySave">重试保存</button><button class="english-rw__button" @click="loadRemote">读取服务端版本</button></div><div v-if="remote"><h3>服务端版本 · {{remote.title}}</h3><p v-if="remote.keywords?.length" class="english-rw__muted">关键词：{{remote.keywords.join('、')}}</p><pre class="rw-writing__remote">{{remote.bodyMarkdown}}</pre><button class="english-rw__button" @click="merge">确认按当前草稿合并保存</button></div></section>
  <p v-if="localRecoveryPaused" role="status">本地恢复/导入内容待确认，自动保存已暂停；检查后点击「确认保存恢复稿」。</p><PublicFilterTabs v-model="tab" label="写作工作区" :options="[{value:'edit',label:'编辑正文'},{value:'preview',label:'阅读预览'},{value:'history',label:'历史版本'}]" />
- <section v-show="tab==='edit'"><div class="english-rw__panel"><div class="english-rw__fields"><label>标题 · 可选<input v-model="form.title" maxlength="200" placeholder="Untitled Article"></label><label>关键词 · 可选<input v-model="keywords" maxlength="3000" placeholder="用逗号分隔"></label><label>摘要 · 可选<textarea v-model="form.summary" maxlength="1000" rows="3"></textarea></label></div><h3>文章分类 · 可选</h3><EnglishTaxonomyFields v-model="form" /></div>
- <section class="english-rw__panel"><h2>英文正文</h2><MarkdownEditor :editor-context="loading ? null : editorContext(article?.id, 'bodyMarkdown', article?.rowVersion, acceptedWriting.bodyMarkdown || '')" @local-content-applied="pauseLocalRecovery" ref="englishEditor" v-model="form.bodyMarkdown" placeholder="Write something that matters to you…" /></section><details class="english-rw__panel"><summary>中文译文 · 可选</summary><MarkdownEditor :editor-context="loading ? null : editorContext(article?.id, 'translationZhMarkdown', article?.rowVersion, acceptedWriting.translationZhMarkdown || '')" @local-content-applied="pauseLocalRecovery" ref="chineseEditor" v-model="form.translationZhMarkdown" /></details>
+ <section v-show="tab==='edit'"><div class="english-rw__panel"><div class="english-rw__fields"><label>标题 · 可选<input v-model="form.title" maxlength="200" placeholder="Untitled Article"></label></div><details><summary>文章分类 · 可选</summary><EnglishTaxonomyFields v-model="form" /></details></div>
+ <p class="english-rw__muted">按相同句序填写原文与翻译，预览会逐句对照。</p><div class="writing-editor-columns"><section class="english-rw__panel"><h2>中文翻译</h2><MarkdownEditor @local-content-applied="pauseLocalRecovery" :outline-default="false" :editor-context="loading ? null : editorContext(article?.id, 'translationZhMarkdown', article?.rowVersion, acceptedWriting.translationZhMarkdown || '')" ref="chineseEditor" v-model="form.translationZhMarkdown" /></section><section class="english-rw__panel"><h2>英文原文</h2><MarkdownEditor @local-content-applied="pauseLocalRecovery" :outline-default="false" :editor-context="loading ? null : editorContext(article?.id, 'bodyMarkdown', article?.rowVersion, acceptedWriting.bodyMarkdown || '')" ref="englishEditor" v-model="form.bodyMarkdown" placeholder="Write something that matters to you…" /></section></div>
  <button class="english-rw__button" @click="deleteOpen=true">归档文章</button><section v-if="deleteOpen" class="english-rw__notice"><p>归档后文章会从列表移除，历史记录保留。</p><div class="english-rw__actions"><button class="english-rw__button" @click="deleteOpen=false">取消</button><button class="english-rw__button" :disabled="busy" @click="archive">确认归档</button></div></section></section>
- <section v-if="tab==='preview'" class="english-rw__panel"><PublicFilterTabs v-model="mode" label="预览语言" :options="[{value:'EN',label:'英文'},{value:'ZH',label:'中文',disabled:!form.translationZhMarkdown?.trim()},{value:'BOTH',label:'双语',disabled:!form.translationZhMarkdown?.trim()}]" /><EnglishBilingualProse :english="form.bodyMarkdown || ''" :chinese="form.translationZhMarkdown || ''" :mode="mode" /></section>
+ <section v-if="tab==='preview'" class="english-rw__panel"><PublicFilterTabs v-model="mode" label="预览语言" :options="[{value:'EN',label:'英文'},{value:'ZH',label:'中文',disabled:!form.translationZhMarkdown?.trim()},{value:'BOTH',label:'逐句对照'}]" /><EnglishArticleParallel v-if="mode==='BOTH'" :english="form.bodyMarkdown" :chinese="form.translationZhMarkdown" /><EnglishBilingualProse v-else :english="form.bodyMarkdown || ''" :chinese="form.translationZhMarkdown || ''" :mode="mode" /></section>
  <EnglishRevisionPanel v-if="tab==='history'" kind="writing" :id="String(article.id)" :row-version="article.rowVersion" :before-action="flush" @restored="restored" />
  </template></main></template>
 <style scoped>
+.writing-editor-columns{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px}.writing-editor-columns>section{min-width:0}@media(max-width:900px){.writing-editor-columns{grid-template-columns:minmax(0,1fr)}}
 /**
  * 组件局部样式：布局、状态和断点分别在以下规则处说明。
  */

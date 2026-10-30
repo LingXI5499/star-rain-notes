@@ -173,7 +173,7 @@ export
    * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
    */
   function createSelection(themeId) {
-  return { themeId: String(themeId), q: '', learned: 'ANY', mastery: 'ANY', inPlan: 'ANY', direction: 'ANY', lastRating: 'ANY',
+  return { themeId: themeId == null || themeId === '' ? null : String(themeId), q: '', learned: 'ANY', mastery: 'ANY', inPlan: 'ANY', direction: 'ANY', lastRating: 'ANY',
     selectAllMatched: false, wordIds: [], excludedWordIds: [], batchSize: 20 }
 }
 export
@@ -213,14 +213,14 @@ export
  * @param themeId 主题标识；默认值、解构字段与可选参数见函数签名。
  * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
  */
-export const draftKey = (themeId) => `sr-vocabulary-plan-selection:${themeId}`
+export const draftKey = (themeId) => `sr-vocabulary-plan-selection:${themeId == null || themeId === '' ? 'all' : themeId}`
 export
   /**
    * 保存选择结果。
    * 主要协作：sessionStorage.setItem、draftKey、JSON.stringify。
    * @param selection 选择结果；默认值、解构字段与可选参数见函数签名。
    */
-  function saveSelection(selection) { sessionStorage.setItem(draftKey(selection.themeId), JSON.stringify(selection)) }
+  function saveSelection(selection, draftThemeId = selection.themeId) { sessionStorage.setItem(draftKey(draftThemeId), JSON.stringify(selection)) }
 export
   /**
    * 加载选择结果。
@@ -231,7 +231,8 @@ export
   function loadSelection(themeId) {
   try {
     const selection = JSON.parse(sessionStorage.getItem(draftKey(themeId)) || 'null')
-    if (selection?.themeId === String(themeId) && Array.isArray(selection.wordIds) && Array.isArray(selection.excludedWordIds)) return selection
+    const globalDraft = themeId == null || themeId === ''
+    if (selection && (globalDraft || selection.themeId === String(themeId)) && Array.isArray(selection.wordIds) && Array.isArray(selection.excludedWordIds)) return selection
   } catch { /* An incomplete draft is harmless; the server validates the final selection. */ }
   return createSelection(themeId)
 }

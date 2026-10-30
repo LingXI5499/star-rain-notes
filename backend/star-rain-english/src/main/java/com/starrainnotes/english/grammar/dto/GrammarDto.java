@@ -19,6 +19,7 @@ import lombok.NoArgsConstructor;
  * 描述请求、内部传输或计算结果的数据结构。字段约束使用本类的校验注解；没有注解的限制由使用该对象的服务处理。
  */
 public final class GrammarDto {
+    public record OrderRequest(List<String> ids) { }
     /**
      * 构造GrammarDto，接收本类使用的依赖或初始化参数。
      */

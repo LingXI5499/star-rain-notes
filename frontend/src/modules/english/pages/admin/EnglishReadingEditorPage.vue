@@ -23,6 +23,7 @@ import { createReading,getReading,updateReading } from '../../api/englishApi'
 import { post } from '../../../../shared/http'
 import { getEnhancements,saveEnhancements } from '../../api/englishRwApi'
 import EnglishTaxonomyFields from '../../components/EnglishTaxonomyFields.vue'
+import EnglishArticleParallel from '../../components/EnglishArticleParallel.vue'
 import EnglishBilingualProse from '../../components/EnglishBilingualProse.vue'
 import EnglishRevisionPanel from '../../components/EnglishRevisionPanel.vue'
 import '../../styles/englishRw.css'
@@ -56,7 +57,7 @@ let initializing=false,generation=0
  * blank的处理函数。
  * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
  */
-function blank(){return{title:'',summary:'',bodyMarkdown:'',translationZhMarkdown:'',primaryTopicId:null,otherTopicIds:[],genreIds:[],purposeIds:[],contentOrigin:'EXTERNAL',sourceName:'',sourceUrl:'',rights:{rightsStatus:'PENDING',rightsBasis:'',originalAuthor:'',licenseNotice:''}}}
+function blank(){return{title:'',bodyMarkdown:'',translationZhMarkdown:'',primaryTopicId:null,otherTopicIds:[],genreIds:[],purposeIds:[],contentOrigin:'ORIGINAL',sourceName:'',sourceUrl:'',rights:{rightsStatus:'CLEARED',rightsBasis:'',originalAuthor:'',licenseNotice:''}}}
 /**
  * 加载行集合。
  * 主要协作：Promise.all、.map、getEnhancements。
@@ -71,7 +72,7 @@ async function loadRows(){if(!article.value)return;const [a,b,c]=await Promise.a
  * @param value 值；默认值、解构字段与可选参数见函数签名。
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
-async function accept(value){initializing=true;article.value=value;form.value={...blank(),...value,rights:{...blank().rights,...value.rights}};await nextTick();initializing=false;dirty.value=false}
+async function accept(value){initializing=true;article.value=value;form.value={...blank(),...value,bodyMarkdown:value.bodyMarkdown ?? '',translationZhMarkdown:value.translationZhMarkdown ?? '',rights:{...blank().rights,...value.rights}};await nextTick();initializing=false;dirty.value=false}
 /**
  * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
  */
@@ -94,7 +95,7 @@ watch(()=>[form.value.bodyMarkdown,form.value.sourceUrl],()=>{if(!initializing &
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
 async function save(){if(busy.value)return false;if(englishEditor.value)form.value.bodyMarkdown=englishEditor.value.getMarkdown();if(chineseEditor.value)form.value.translationZhMarkdown=chineseEditor.value.getMarkdown();await nextTick();busy.value=true;error.value='';notice.value=''
- try { const payload={...form.value,rowVersion:article.value?.rowVersion};const saved=article.value?await updateReading(article.value.id,payload):await createReading(payload);const unchanged=JSON.stringify({...form.value,rowVersion:article.value?.rowVersion})===JSON.stringify(payload);if(unchanged)await accept(saved);else{article.value=saved;dirty.value=true}await loadRows();notice.value=unchanged?'正文与分类已保存。':'提交的正文已保存，后续输入仍待保存。'
+ try { const payload={...form.value,contentOrigin:'ORIGINAL',sourceName:'',sourceUrl:'',rights:{rightsStatus:'CLEARED',rightsBasis:'',originalAuthor:'',licenseNotice:''},rowVersion:article.value?.rowVersion};const saved=article.value?await updateReading(article.value.id,payload):await createReading(payload);const unchanged=JSON.stringify({...form.value,contentOrigin:'ORIGINAL',sourceName:'',sourceUrl:'',rights:payload.rights,rowVersion:article.value?.rowVersion})===JSON.stringify(payload);if(unchanged)await accept(saved);else{article.value=saved;dirty.value=true}await loadRows();notice.value=unchanged?'正文与分类已保存。':'提交的正文已保存，后续输入仍待保存。'
   if(route.params.documentId==='new' && !dirty.value)await router.replace(accountPath('/english/manage/editor/world/'+saved.id));return true
  }catch(cause){error.value=errorMessage(cause);return false}finally{busy.value=false}}
 /**
@@ -157,13 +158,11 @@ async function saveRows(kind){if(busy.value || dirty.value)return;busy.value=tru
  */
 async function restored(value){await accept(value);await loadRows();notice.value='已恢复正文、分类与增强数据，并新增历史版本。'}
 </script>
-<template><main class="english-rw"><RouterLink :to="accountPath('/english/manage/world')">← 世界文章管理</RouterLink><header class="english-rw__hero"><div><p class="public-eyebrow">WORLD STUDIO</p><h1>{{article?'编辑世界文章':'新建世界文章'}}</h1><p>{{article?.publishStatus==='PUBLISHED'?'已发布':article?.publishStatus==='WITHDRAWN'?'已撤回':'草稿'}}{{dirty?' · 有未保存修改':''}}</p></div><div class="english-rw__actions"><RouterLink class="english-rw__button" :to="accountPath('/english/manage/taxonomy')">管理分类</RouterLink><button v-if="article" class="english-rw__button" :disabled="busy || (dirty && article.publishStatus!=='PUBLISHED')" @click="status">{{article.publishStatus==='PUBLISHED'?'撤回':'发布'}}</button><button class="english-rw__button english-rw__button--primary" :disabled="busy" @click="save">保存正文</button></div></header>
+<template><main class="english-rw"><RouterLink :to="accountPath('/english/manage/world')">← 世界文章管理</RouterLink><header class="english-rw__hero"><div><p class="public-eyebrow">WORLD STUDIO</p><h1>{{article?'编辑世界文章':'新建世界文章'}}</h1><p>{{article?.publishStatus==='PUBLISHED'?'已发布':article?.publishStatus==='WITHDRAWN'?'已撤回':'草稿'}}{{dirty?' · 有未保存修改':''}}</p></div><div class="english-rw__actions"><RouterLink class="english-rw__button" :to="{path:accountPath('/english/manage/taxonomy'),query:{module:'world'}}">管理分类</RouterLink><button v-if="article" class="english-rw__button" :disabled="busy || (dirty && article.publishStatus!=='PUBLISHED')" @click="status">{{article.publishStatus==='PUBLISHED'?'撤回':'发布'}}</button><button class="english-rw__button english-rw__button--primary" :disabled="busy" @click="save">保存正文</button></div></header>
  <p v-if="error" class="english-rw__error" role="alert">{{error}}</p><p v-if="notice" class="english-rw__notice" role="status">{{notice}}</p><p v-if="loading">正在读取…</p><template v-else>
  <PublicFilterTabs v-model="tab" :options="tabs" label="阅读编辑工作区" />
- <section v-show="tab==='body'"><div class="english-rw__panel"><div class="english-rw__fields"><label>标题 · 可选<input v-model="form.title" maxlength="200" placeholder="Untitled Article"></label><label>摘要 · 可选<textarea v-model="form.summary" maxlength="1000" rows="2"></textarea></label></div><EnglishTaxonomyFields v-model="form" /></div>
- <div class="english-rw__panel"><h2>来源与公开权限</h2><p class="english-rw__muted">外部作品需要先确认公开依据。正文或来源变化后请重新核查。</p><div class="english-rw__fields"><PublicSelect v-model="form.contentOrigin" label="内容来源" :options="[{value:'EXTERNAL',label:'外部作品'},{value:'ORIGINAL',label:'本人原创'}]" /><PublicSelect v-model="form.rights.rightsStatus" label="版权核查状态" :options="[{value:'PENDING',label:'待核查'},{value:'CLEARED',label:'已核查可公开'},{value:'BLOCKED',label:'禁止公开'}]" /><label>来源名称<input v-model="form.sourceName" maxlength="200"></label><label>来源地址<input v-model="form.sourceUrl" type="url" maxlength="500"></label><label>原作者<input v-model="form.rights.originalAuthor" maxlength="200"></label><label>公开依据 · 仅管理端可见<textarea v-model="form.rights.rightsBasis" maxlength="1000" rows="3"></textarea></label><label>读者可见的许可说明<textarea v-model="form.rights.licenseNotice" maxlength="10000" rows="3"></textarea></label></div>
- </div>
- <section class="english-rw__panel"><h2>完整英文正文</h2><MarkdownEditor :editor-context="loading ? null : editorContext(article?.id || route.params.documentId, 'bodyMarkdown', article?.rowVersion, article?.bodyMarkdown || '')" ref="englishEditor" v-model="form.bodyMarkdown" /></section><section class="english-rw__panel"><h2>完整中文译文 · 可选</h2><MarkdownEditor :editor-context="loading ? null : editorContext(article?.id || route.params.documentId, 'translationZhMarkdown', article?.rowVersion, article?.translationZhMarkdown || '')" ref="chineseEditor" v-model="form.translationZhMarkdown" /></section></section>
+ <section v-show="tab==='body'"><div class="english-rw__panel"><div class="english-rw__fields"><label>标题 · 可选<input v-model="form.title" maxlength="200" placeholder="Untitled Article"></label></div><details><summary>分类 · 可选</summary><EnglishTaxonomyFields v-model="form" /></details></div>
+ <p class="english-rw__muted">按相同句序填写英文原文与中文翻译，预览会逐句对照；也可以每句单独成段。</p><div class="world-editor-columns"><section class="english-rw__panel"><h2>中文翻译</h2><MarkdownEditor :outline-default="false" :editor-context="loading ? null : editorContext(article?.id || route.params.documentId, 'translationZhMarkdown', article?.rowVersion, article?.translationZhMarkdown || '')" ref="chineseEditor" v-model="form.translationZhMarkdown" /></section><section class="english-rw__panel"><h2>英文原文</h2><MarkdownEditor :outline-default="false" :editor-context="loading ? null : editorContext(article?.id || route.params.documentId, 'bodyMarkdown', article?.rowVersion, article?.bodyMarkdown || '')" ref="englishEditor" v-model="form.bodyMarkdown" /></section></div><details class="english-rw__panel"><summary>双语对照预览</summary><EnglishArticleParallel :english="form.bodyMarkdown" :chinese="form.translationZhMarkdown" /></details></section>
  <template v-if="tab==='alignments' || tab==='annotations'"><p v-if="dirty" class="english-rw__notice">请先保存正文，再选择片段。正文修改会使已有标注失效。</p><p class="english-rw__muted">{{tab==='alignments'?'在下方预览中依次选择英文、中文片段，可按一对多加入同组。':'在英文预览中选择少量值得精读的片段，填写人工解析。'}}</p>
  <EnglishBilingualProse :english="article.bodyMarkdown || ''" :chinese="article.translationZhMarkdown || ''" :mode="tab==='alignments'?'BOTH':'EN'" :selecting="!dirty" @selection="select" @invalid="error=$event" />
  <div v-if="tab==='alignments'" class="english-rw__panel"><h2>待建立的对齐组</h2><div v-for="(r,i) in selected" :key="i" class="english-rw__row"><span>{{r.language}} · {{r.expectedText}}</span><button class="english-rw__button" @click="selected.splice(i,1)">移除片段</button></div><button class="english-rw__button" :disabled="dirty" @click="addGroup">添加为一个对齐组</button><div v-for="[key,items] in groups" :key="key" class="english-rw__row"><div><p v-for="(r,i) in items" :key="i">{{r.language}} · {{r.expectedText}} <span v-if="r.status==='STALE'" class="english-rw__badge">已失效，请重新选择</span></p></div><button class="english-rw__button" @click="rows.alignments=rows.alignments.filter(r=>r.groupKey!==key)">移除整组</button></div><button class="english-rw__button english-rw__button--primary" :disabled="busy || dirty" @click="saveRows('alignments')">保存所有对齐组</button></div>
@@ -171,3 +170,7 @@ async function restored(value){await accept(value);await loadRows();notice.value
  <section v-if="tab==='vocabulary'" class="english-rw__panel"><h2>本文词汇</h2><p class="english-rw__muted">只记录本文的单词、词性和中文释义。同一单词可以添加不同词性。</p><div class="english-rw__fields"><label>单词<input v-model="word.word" maxlength="200"></label><PublicSelect v-model="word.partOfSpeech" label="词性" :options="pos.map(v=>({value:v,label:v}))" /><label>本文中文释义<input v-model="word.meaningZh" maxlength="500"></label></div><button class="english-rw__button" @click="addWord">确认词汇条目</button><div v-for="(r,i) in rows.vocabulary" :key="i" class="english-rw__row"><span><strong>{{r.word}}</strong> · {{r.partOfSpeech}} · {{r.meaningZh}}</span><div class="english-rw__actions"><button class="english-rw__button" @click="word={...r};editingWord=i">编辑</button><button class="english-rw__button" @click="rows.vocabulary.splice(i,1)">移除</button></div></div><button class="english-rw__button english-rw__button--primary" :disabled="busy || dirty" @click="saveRows('vocabulary')">保存全部词汇</button></section>
  <EnglishRevisionPanel v-if="tab==='history'" kind="reading" :id="String(article.id)" :row-version="article.rowVersion" :before-action="async()=>!dirty || await save()" @restored="restored" />
  </template></main></template>
+
+<style scoped>
+.world-editor-columns{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px}.world-editor-columns>section{min-width:0}@media(max-width:900px){.world-editor-columns{grid-template-columns:minmax(0,1fr)}}
+</style>

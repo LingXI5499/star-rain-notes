@@ -61,6 +61,6 @@ function resize(value){router.push({query:{...route.query,pageSize:value===12?un
  <header class="english-rw__hero"><div><p class="public-eyebrow">READ & UNDERSTAND</p><h1>阅读中心</h1><p>读完整文章，理解真实表达。按主题、文体与用途探索。</p></div><span class="english-rw__muted">{{data.total}} 篇文章</span></header>
  <EnglishTopicDirectory /><EnglishArticleFilters :model-value="route.query" @update:model-value="router.push({query:$event})" />
  <p v-if="loading" class="english-rw__empty">正在读取文章…</p><p v-else-if="error" class="english-rw__error" role="alert">{{error}}</p>
- <template v-else><div class="english-rw__grid"><RouterLink v-for="item in data.items" :key="item.id" class="english-rw__card" :to="contentPath('/english/reading/'+item.slug)"><small>READING</small><h2>{{item.title}}</h2><p>{{item.summary}}</p><strong>开始阅读 →</strong></RouterLink></div><p v-if="!data.items.length" class="english-rw__empty">暂无匹配的阅读文章，可以调整筛选或稍后再来。</p></template>
+ <template v-else><div class="english-rw__grid"><RouterLink v-for="item in data.items" :key="item.id" class="english-rw__card" :to="contentPath('/english/reading/'+item.slug)"><small>READING</small><h2>{{item.title}}</h2><strong>开始阅读 →</strong></RouterLink></div><p v-if="!data.items.length" class="english-rw__empty">暂无匹配的阅读文章，可以调整筛选或稍后再来。</p></template>
  <PublicPagination :page="page" :page-size="size" :total="data.total" :loading="loading" unit="篇" label="阅读文章分页" @change="paginate" @page-size="resize" />
 </main></template>

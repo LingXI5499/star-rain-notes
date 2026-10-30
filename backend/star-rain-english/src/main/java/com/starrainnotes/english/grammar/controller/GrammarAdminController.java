@@ -37,6 +37,20 @@ public class GrammarAdminController {
      */
     private final GrammarService service;
 
+    @PutMapping("/sections/order")
+    @PreAuthorize("hasAuthority('english:content-edit')")
+    public ApiResponse<Void> reorderSections(@RequestBody GrammarDto.OrderRequest request) {
+        service.reorderSections(request == null ? null : request.ids());
+        return ApiResponse.ok(null);
+    }
+
+    @PutMapping("/sections/{sectionId}/lessons/order")
+    @PreAuthorize("hasAuthority('english:content-edit')")
+    public ApiResponse<Void> reorderLessons(@PathVariable String sectionId, @RequestBody GrammarDto.OrderRequest request) {
+        service.reorderLessons(sectionId, request == null ? null : request.ids());
+        return ApiResponse.ok(null);
+    }
+
     /**
      * curriculum处理入口。
      * HTTP 映射：<code>@GetMapping</code>。

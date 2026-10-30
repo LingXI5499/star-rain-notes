@@ -14,6 +14,7 @@ import { operationLabels } from '../../tutorial/support/operationResult'
 import { dateLabel } from '../support/display'
 import { computed, defineAsyncComponent } from 'vue'
 
+const EnglishArticleParallel = defineAsyncComponent(() => import('../../english/components/EnglishArticleParallel.vue'))
 const BlogProse = defineAsyncComponent(() => import('../../blog/components/BlogProse.vue'))
 
 /*
@@ -79,7 +80,7 @@ const extraEntries = () => {
   <div class="review-target">
     <div v-if="view" class="review-target__body">
       <p v-if="view.title" class="review-target__title">{{ view.title }}</p>
-      <p v-if="view.summary" class="review-target__summary">{{ view.summary }}</p>
+      <p v-if="view.summary && view.viewType!=='ENGLISH_ESSAY'" class="review-target__summary">{{ view.summary }}</p>
       <section v-if="view.viewType === 'TUTORIAL_OPERATION'" class="review-target__operation">
         <h3>{{ operationLabels[view.operation] || view.operation }}</h3>
         <p>业务应用状态：{{ {PENDING:'尚未应用', APPLIED:'已生效', REJECTED:'已拒绝，未应用', CANCELED:'已取消，未应用', FAILED:'应用失败，需核实后恢复'}[view.executionStatus] }}</p>
@@ -104,7 +105,7 @@ const extraEntries = () => {
           </article>
         </section>
       </div>
-      <pre v-else-if="view.contentSnapshot" class="review-target__content">{{ view.contentSnapshot }}</pre>
+      <EnglishArticleParallel v-else-if="view.viewType==='ENGLISH_ESSAY'" :english="view.contentSnapshot?.bodyMarkdown" :chinese="view.contentSnapshot?.translationZhMarkdown"/><pre v-else-if="view.contentSnapshot" class="review-target__content">{{ view.contentSnapshot }}</pre>
 
       <dl class="detail-list review-target__meta">
         <div><dt>视图类型</dt><dd>{{ view.viewType }}</dd></div>

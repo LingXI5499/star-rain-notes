@@ -63,6 +63,6 @@ const active = computed(() => ['search', ...(props.lockedTopic ? [] : ['topicId'
 function update(key, value) { emit('update:modelValue', { ...props.modelValue, [key]: value || undefined, page: undefined }) }
 </script>
 <template><PublicFilterBar label="文章筛选" :active="active" @reset="search = ''; emit('update:modelValue', {})">
- <PublicSearch v-model="search" label="搜索标题或摘要" @search="update('search', $event)" />
+ <PublicSearch v-model="search" label="搜索文章" @search="update('search', $event)" />
  <PublicSelect v-for="field in fields" :key="field.key" :model-value="String(modelValue[field.key] || '')" :options="options(field.dimension)" :label="field.label" @update:model-value="update(field.key, $event)" />
 </PublicFilterBar></template>

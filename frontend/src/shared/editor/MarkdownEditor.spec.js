@@ -11,13 +11,13 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { useAuthStore } from '../../modules/account/stores/authStore'
-const state = vi.hoisted(() => ({ options: null, insert: vi.fn(), upload: vi.fn(), prepare:vi.fn(), remote:vi.fn() }))
+const state = vi.hoisted(() => ({ options: null, insert: vi.fn(), upload: vi.fn(), prepare:vi.fn(), remote:vi.fn(),read:vi.fn(),write:vi.fn(),editor:null }))
 vi.mock('../../modules/media/api/mediaApi', () => ({ uploadMedia: state.upload, getMedia: vi.fn(), prepareEditorImage:state.prepare, importEditorImage:state.remote }))
 vi.mock('../markdown/mathJax', () => ({ prepareMathJax: vi.fn().mockResolvedValue(undefined) }))
 vi.mock('vditor', () => ({ default: class {
-  constructor(host, options) { state.options = options; this.value = options.value; host.innerHTML = '<div contenteditable="true"><p>原文</p></div>' }
-  getValue() { return this.value }
-  setValue(value) { this.value = value }
+  constructor(host, options) { state.editor=this;state.options = options; this.value = options.value; host.innerHTML = '<div contenteditable="true"><p>原文</p></div>' }
+  getValue() { state.read();return this.value }
+  setValue(value) { state.write(value);this.value = value }
   setTheme() {}
   disabled() {}
   enable() {}
@@ -28,7 +28,14 @@ import MarkdownEditor from './MarkdownEditor.vue'
 import LegacyMarkdownEditor from '../../modules/blog/components/admin/MarkdownEditor.vue'
 
 describe('shared Markdown editor', () => {
-  beforeEach(() => { vi.clearAllMocks(); state.options = null; setActivePinia(createPinia()); useAuthStore().currentUser = { permissions: ['media:upload'] } })
+  beforeEach(() => { vi.clearAllMocks();localStorage.clear(); state.options = null; setActivePinia(createPinia()); useAuthStore().currentUser = { permissions: ['media:upload'] } })
+  it('accepts an explicit null database body without breaking page rendering', async () => {
+    const wrapper=mount(MarkdownEditor,{props:{modelValue:null},attachTo:document.body})
+    await flushPromises()
+    await vi.waitFor(()=>expect(state.options).toBeTruthy())
+    expect(state.options.value).toBe('')
+    wrapper.unmount()
+  })
   it('keeps the legacy blog import pointing to the same editor', () => {
     expect(LegacyMarkdownEditor).toBe(MarkdownEditor)
   })
@@ -49,8 +56,8 @@ describe('shared Markdown editor', () => {
    * 主要协作：mount、.toBeTruthy、state.options.after。
    * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
    */
-  async function editor() {
-    const wrapper = mount(MarkdownEditor, { props: { modelValue: '原文' }, attachTo: document.body })
+  async function editor(props={}) {
+    const wrapper = mount(MarkdownEditor, { props: { modelValue: '原文',...props }, attachTo: document.body })
     await vi.waitFor(() => expect(state.options).toBeTruthy())
     state.options.after()
     return wrapper
@@ -69,6 +76,25 @@ describe('shared Markdown editor', () => {
     wrapper.find('[contenteditable]').element.dispatchEvent(event)
     return event
   }
+  it('hides the outline by default for English and toggles it without rebuilding the editor',async()=>{
+    const wrapper=await editor({outlineDefault:false,editorContext:{accountId:1,module:'english-writing',field:'bodyMarkdown'}})
+    const original=wrapper.get('[contenteditable]').element
+    expect(wrapper.find('[aria-label="文档大纲"]').exists()).toBe(false)
+    await wrapper.get('.editor-menubar__outline').trigger('click');await flushPromises()
+    expect(wrapper.get('[aria-label="文档大纲"]').exists()).toBe(true)
+    expect(wrapper.get('.editor-menubar__outline').attributes('aria-pressed')).toBe('true')
+    await wrapper.get('[aria-label="文档大纲"] [aria-label="隐藏大纲"]').trigger('click');await flushPromises()
+    expect(wrapper.find('[aria-label="文档大纲"]').exists()).toBe(false);expect(wrapper.get('[contenteditable]').element).toBe(original);expect(wrapper.vm.getMarkdown()).toBe('原文')
+    wrapper.unmount()
+  })
+  it('keeps recovery available on existing pages while a server-owned screen can hide it',async()=>{
+    const wrapper=await editor({browserRecovery:false});await wrapper.find('[data-group=file]').trigger('click');expect(document.querySelector('[role=menu]').textContent).not.toContain('本地恢复点');expect(wrapper.find('.editor-recovery').exists()).toBe(false);await wrapper.setProps({browserRecovery:true});await flushPromises();expect(document.querySelector('[role=menu]').textContent).toContain('本地恢复点');wrapper.unmount()
+  })
+  it('keeps the general editor outline available by default',async()=>{const wrapper=await editor();expect(wrapper.find('[aria-label="文档大纲"]').exists()).toBe(true);wrapper.unmount()})
+  it('does not convert the whole editor DOM again when its input is echoed by v-model',async()=>{
+    const wrapper=await editor({outlineDefault:false});state.read.mockClear();state.write.mockClear();state.editor.value='Typed immediately';state.options.input('Typed immediately');await wrapper.setProps({modelValue:'Typed immediately'})
+    expect(state.read).not.toHaveBeenCalled();expect(state.write).not.toHaveBeenCalled();expect(wrapper.vm.getMarkdown()).toBe('Typed immediately');wrapper.unmount()
+  })
   it('uploads pasted and dropped images once each and inserts registered media URLs', async () => {
     state.upload.mockResolvedValue({ originalName: '截图.png', contentUrl: '/api/media/assets/19/content' })
     const wrapper = await editor()

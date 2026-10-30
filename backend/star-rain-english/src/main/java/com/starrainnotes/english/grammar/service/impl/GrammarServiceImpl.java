@@ -21,6 +21,7 @@ import com.starrainnotes.english.grammar.dto.GrammarDto.SectionRequest;
 import com.starrainnotes.english.grammar.mapper.GrammarMapper;
 import com.starrainnotes.english.grammar.service.GrammarService;
 import java.util.List;
+import java.util.HashSet;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -134,6 +135,7 @@ public class GrammarServiceImpl implements GrammarService {
     @Override
     @Transactional
     public Section createSection(SectionRequest request) {
+        lockStructure();
         validateSection(request);
         Section section = new Section();
         section.setTitle(request.getTitle().trim());
@@ -154,6 +156,7 @@ public class GrammarServiceImpl implements GrammarService {
     @Override
     @Transactional
     public Section updateSection(String sectionId, SectionRequest request) {
+        lockStructure();
         validateSection(request);
         Section section = new Section();
         section.setId(id(sectionId));
@@ -173,7 +176,11 @@ public class GrammarServiceImpl implements GrammarService {
     @Override
     @Transactional
     public void deleteSection(String sectionId) {
-        if (mapper.deleteSection(id(sectionId)) == 0) sectionNotFound();
+        lockStructure();
+        long section = id(sectionId);
+        requiredSection(section);
+        mapper.deleteLessonsInSection(section);
+        if (mapper.deleteSection(section) == 0) sectionNotFound();
         changed("ENGLISH_GRAMMAR_LESSON", null);
     }
 
@@ -188,6 +195,7 @@ public class GrammarServiceImpl implements GrammarService {
     @Override
     @Transactional
     public Lesson createLesson(LessonRequest request) {
+        lockStructure();
         validateLesson(request);
         Lesson lesson = fromRequest(request);
         lesson.setSlug("new-" + UUID.randomUUID());
@@ -209,6 +217,7 @@ public class GrammarServiceImpl implements GrammarService {
     @Override
     @Transactional
     public Lesson updateLesson(String lessonId, LessonRequest request) {
+        lockStructure();
         validateLesson(request);
         Lesson existing = lesson(lessonId, true);
         Lesson lesson = fromRequest(request);
@@ -247,6 +256,7 @@ public class GrammarServiceImpl implements GrammarService {
     @Override
     @Transactional
     public void deleteLesson(String lessonId) {
+        lockStructure();
         if (mapper.deleteLesson(id(lessonId)) == 0) lessonNotFound();
         changed("ENGLISH_GRAMMAR_LESSON", id(lessonId));
     }
@@ -258,6 +268,41 @@ public class GrammarServiceImpl implements GrammarService {
      * @param type 类型；类型为 <code>String</code>
      * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
      */
+    private void lockStructure() {
+        if (mapper.lockCourse() == null) {
+            throw new ApiException("ENGLISH_GRAMMAR_NOT_FOUND", "语法课程不存在", 404);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void reorderSections(List<String> ids) {
+        lockStructure();
+        List<Long> ordered = validateOrder(ids, mapper.sections().stream().map(Section::getId).toList());
+        for (int index = 0; index < ordered.size(); index++) mapper.orderSection(ordered.get(index), (index + 1) * 10);
+    }
+
+    @Override
+    @Transactional
+    public void reorderLessons(String sectionId, List<String> ids) {
+        lockStructure();
+        long section = id(sectionId);
+        Section current = requiredSection(section);
+        List<Long> ordered = validateOrder(ids, current.getLessons().stream().map(Lesson::getId).toList());
+        for (int index = 0; index < ordered.size(); index++) mapper.orderLesson(ordered.get(index), section, (index + 1) * 10);
+    }
+
+    private List<Long> validateOrder(List<String> ids, List<Long> current) {
+        if (ids == null || ids.size() != current.size() || ids.size() > 10000 || ids.stream().anyMatch(value -> value == null || !value.matches("[1-9][0-9]*"))) {
+            throw new ApiException("ENGLISH_GRAMMAR_ORDER_INVALID", "请使用完整的同级目录排序", 400);
+        }
+        List<Long> ordered = ids.stream().map(this::id).toList();
+        if (new HashSet<>(ordered).size() != ordered.size() || !new HashSet<>(ordered).equals(new HashSet<>(current))) {
+            throw new ApiException("ENGLISH_GRAMMAR_ORDER_INVALID", "目录已变化，请刷新后重新排序", 409);
+        }
+        return ordered;
+    }
+
     private void changed(String type, Long id) {
         events.publishEvent(new EnglishSearchContentChangedEvent(type, id));
     }

@@ -64,6 +64,8 @@ public interface WritingArticleService {
      * @param version 版本；类型为 <code>Long</code>
      * @return 类型为 <code>Article</code> 的处理结果
      */
+    Article submit(String id,Long version);
+    Article cancelReview(String id,Long version);
     Article complete(String id,Long version);
     /**
      * 发布写作Article。

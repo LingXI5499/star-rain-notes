@@ -32,6 +32,19 @@ public class EssaysAdminController {
     public ApiResponse<Article> complete(@PathVariable String id, @RequestBody RevisionDto.Request value) {
         return ApiResponse.ok(service.complete(id, value.getRowVersion()));
     }
+    @PostMapping("/{id}/submit")
+    public ApiResponse<Article> submit(@PathVariable String id, @RequestBody RevisionDto.Request value) {
+        return ApiResponse.ok(service.submit(id, value.getRowVersion()));
+    }
+    @PostMapping("/{id}/cancel")
+    public ApiResponse<Article> cancel(@PathVariable String id, @RequestBody RevisionDto.Request value) {
+        return ApiResponse.ok(service.cancelReview(id, value.getRowVersion()));
+    }
+    @PostMapping("/{id}/withdraw")
+    @PreAuthorize("hasAuthority('english:content-publish')")
+    public ApiResponse<Article> withdraw(@PathVariable String id, @RequestBody RevisionDto.Request value) {
+        return ApiResponse.ok(service.publish(id, value.getRowVersion(), false));
+    }
     @DeleteMapping("/{id}")
     public ApiResponse<Void> delete(@PathVariable String id) { service.delete(id); return ApiResponse.ok(null); }
 }

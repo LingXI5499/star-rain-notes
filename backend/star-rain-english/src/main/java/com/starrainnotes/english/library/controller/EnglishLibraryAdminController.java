@@ -14,6 +14,10 @@ import org.springframework.web.bind.annotation.*;
 @PreAuthorize("hasAuthority('english:content-edit')")
 public class EnglishLibraryAdminController {
     private final EnglishLibraryService service;
+    @PostMapping
+    public ApiResponse<com.starrainnotes.english.vocabulary.dto.VocabularyDto.Word> create(@RequestBody com.starrainnotes.english.library.dto.LibraryDto.NewWord value) {
+        return ApiResponse.ok(service.createWord(value));
+    }
     @PutMapping("/{id}")
     public ApiResponse<Void> classify(@PathVariable long id, @RequestBody Classification value) {
         service.classify(id, value);

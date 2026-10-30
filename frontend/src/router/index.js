@@ -100,6 +100,8 @@ export const routeDeclarations = [
    * （vue-router 4 的静态段本身优先于参数段，这里的顺序是显式声明意图，不依赖打分实现。）
    */
   { path: '/english/vocabulary/study', component: () => import('../modules/english/pages/public/VocabularyStudyPage.vue'), meta: { publicPage: true } },
+  { path: '/english/vocabulary/learn', component: () => import('../modules/english/pages/public/VocabularyPage.vue'), meta: { publicPage: true } },
+  { path: '/english/vocabulary/learn/:themeId', component: () => import('../modules/english/pages/public/VocabularyThemePage.vue'), meta: { publicPage: true } },
   { path: '/english/vocabulary/plan/confirm', component: () => import('../modules/english/pages/public/VocabularyPlanConfirmPage.vue'), meta: { publicPage: true } },
   { path: '/english/vocabulary/plan', component: () => import('../modules/english/pages/public/VocabularyPlanPage.vue'), meta: { publicPage: true } },
   { path: '/english/vocabulary/progress', component: () => import('../modules/english/pages/public/VocabularyProgressPage.vue'), meta: { publicPage: true } },
@@ -214,7 +216,7 @@ export const routeDeclarations = [
     meta: { console: true, requiresAuth: true, permission: 'english:content-read-admin' } },
   { path: '/english/manage/overview', component: () => import('../modules/english/pages/admin/EnglishOverviewPage.vue'),
     meta: { console: true, requiresAuth: true, permission: 'english:overview-manage' } },
-  { path: '/english/manage/vocabulary/source', component: () => import('../modules/english/pages/admin/VocabularyManagePage.vue'), meta:{console:true,requiresAuth:true,permission:'english:content-edit'} },
+  { path: '/english/manage/vocabulary/source', redirect: to => ({path:'/english/manage/vocabulary',query:{...to.query,create:'word'},hash:to.hash}), meta:{console:true,requiresAuth:true,permission:'english:content-edit'} },
   { path: '/english/manage/vocabulary', component: () => import('../modules/english/pages/admin/EnglishVocabularyManagePage.vue'),
     meta: { console: true, requiresAuth: true, permission: 'english:content-read-admin' } },
   { path: '/english/manage/grammar', component: () => import('../modules/english/pages/admin/GrammarManagePage.vue'),
@@ -226,8 +228,8 @@ export const routeDeclarations = [
     meta: { console: true, requiresAuth: true, permission: 'english:content-read-admin' } },
   { path: '/english/manage/writing', redirect: to => ({path:'/english/manage/essays',query:to.query,hash:to.hash}), meta: {requiresAuth:true} },
   { path: '/english/manage/essays', component: () => import('../modules/english/pages/admin/EnglishEssaysManagePage.vue'), meta: {requiresAuth:true,console:true,permission:'english:content-edit'} },
-  { path: '/english/manage/essays/editor/new', component: () => import('../modules/english/pages/public/EnglishWritingEditorPage.vue'), props:{essay:true}, meta: {requiresAuth:true,console:true,permission:'english:content-edit'} },
-  { path: '/english/manage/essays/editor/:id', component: () => import('../modules/english/pages/public/EnglishWritingEditorPage.vue'), props:{essay:true}, meta: {requiresAuth:true,console:true,permission:'english:content-edit'} },
+  { path: '/english/manage/essays/editor/new', component: () => import('../modules/english/pages/admin/EnglishEssayEditorPage.vue'), meta: {requiresAuth:true,console:true,permission:'english:content-edit'} },
+  { path: '/english/manage/essays/editor/:id', component: () => import('../modules/english/pages/admin/EnglishEssayEditorPage.vue'), meta: {requiresAuth:true,console:true,permission:'english:content-edit'} },
   { path: '/english/manage/taxonomy', component: () => import('../modules/english/pages/admin/EnglishTaxonomyManagePage.vue'), meta: { requiresAuth: true, console: true, permission: 'english:content-edit' } },
   { path: '/english/manage/editor/reading/:documentId', redirect: to => ({path:'/english/manage/editor/world/'+to.params.documentId,query:to.query,hash:to.hash}), meta:{requiresAuth:true} },
   { path: '/english/manage/editor/world/:documentId', component: () => import('../modules/english/pages/admin/EnglishReadingEditorPage.vue'), meta: { requiresAuth: true, console: true, permission: 'english:content-edit' } },

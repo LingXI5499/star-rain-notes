@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.english.grammar.mapper.GrammarMapper">
+    <select id="lockCourse" resultMap="courseMap">
+        SELECT title,subtitle,summary,introduction,roadmap_markdown,publish_status
+        FROM sr_english_grammar_course WHERE id=1 FOR UPDATE
+    </select>
+    <delete id="deleteLessonsInSection">DELETE FROM sr_english_grammar_lesson WHERE section_id=#{sectionId} AND course_id=1</delete>
+    <update id="orderSection">UPDATE sr_english_grammar_section SET sort_order=#{sortOrder} WHERE id=#{id} AND course_id=1</update>
+    <update id="orderLesson">UPDATE sr_english_grammar_lesson SET sort_order=#{sortOrder} WHERE id=#{id} AND section_id=#{sectionId} AND course_id=1</update>
     <!--
       GrammarMapper.xml：com.starrainnotes.english.grammar.mapper.GrammarMapper 的 MyBatis SQL 映射。
       语句 id 对应 Mapper 接口方法；#{...} 使用预编译参数，字段别名及结果映射约定保持一致。

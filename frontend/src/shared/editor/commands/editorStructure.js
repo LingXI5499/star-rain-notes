@@ -116,10 +116,9 @@ export function headingEdit(source, start, end, level) {
 export function outlineSections(source) {
   const { blocks, lines } = markdownBlocks(source)
   const used = new Map()
-  return blocks
+  const headings = blocks
     .filter((block) => block.level)
-    .map((block, index, all) => {
-      const next = all.slice(index + 1).find((item) => item.level <= block.level)
+    .map((block) => {
       const title = headingText(
         parser.parseInline(
           lines[block.start].replace(/^\s*#{1,6}\s*/, '').replace(/\s+#+\s*$/, ''),
@@ -130,7 +129,13 @@ export function outlineSections(source) {
         ...block,
         title,
         id: uniqueHeadingId(title, used),
-        sectionEnd: next?.start ?? lines.length,
+        sectionEnd: lines.length,
       }
     })
+  const stack=[]
+  for(const heading of headings){
+    while(stack.length && stack.at(-1).level>=heading.level)stack.pop().sectionEnd=heading.start
+    stack.push(heading)
+  }
+  return headings
 }

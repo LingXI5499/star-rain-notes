@@ -12,6 +12,9 @@
 import { computed, reactive, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import PublicSearch from '../../../../shared/ui/PublicSearch.vue'
+import AppConfirmDialog from '../../../../shared/ui/AppConfirmDialog.vue'
+import { useAuthStore } from '../../../account/stores/authStore'
+import { beginOrderDrag, moveOrder } from '../../../tutorial/support/dragOrder'
 import MarkdownEditor from '../../../../shared/editor/MarkdownEditor.vue'
 import { useEditorContexts } from '../../../../shared/editor/recovery/useEditorContexts'
 const editorContext = useEditorContexts('english-grammar-course')
@@ -21,6 +24,7 @@ import { accountPath } from '../../../../shared/viewMode'
 import {
   createGrammarSection, deleteGrammarLesson, deleteGrammarSection, getGrammarCurriculum,
   setGrammarCoursePublished, setGrammarLessonPublished, updateGrammarCourse, updateGrammarSection,
+  reorderGrammarSections, reorderGrammarLessons,
 } from '../../api/englishApi'
 
 /**
@@ -31,6 +35,26 @@ const route = useRoute()
  * router；通过 useRouter 建立。
  */
 const router = useRouter()
+const auth = useAuthStore(), confirmDialog = ref(null)
+const canEdit = computed(() => auth.hasPermission('english:content-edit'))
+const canPublish = computed(() => auth.hasPermission('english:content-edit'))
+const dragging = ref(null), dropTarget = ref('')
+function endDrag() { dragging.value = null; dropTarget.value = '' }
+function startDrag(event, kind, id) { const value = beginOrderDrag(event, id, canEdit.value && !busy.value && (kind !== 'lesson' || !search.value.trim())); dragging.value = value ? { kind, id: value } : null }
+async function dropItem(kind, target) {
+  if (!canEdit.value || busy.value || dragging.value?.kind !== kind || (kind === 'lesson' && search.value.trim())) return endDrag()
+  const rows = kind === 'section' ? sections.value : active.value?.lessons || []
+  const ids = moveOrder(rows.map(row => String(row.id)), dragging.value.id, String(target)); endDrag()
+  if (!ids) return
+  busy.value = true; error.value = ''; notice.value = ''
+  try { if (kind === 'section') await reorderGrammarSections(ids); else await reorderGrammarLessons(activeId.value, ids); await load(); notice.value = '顺序已保存。' }
+  catch (cause) { error.value = errorMessage(cause) } finally { busy.value = false }
+}
+function moveItem(kind, id, direction) {
+  const rows = kind === 'section' ? sections.value : active.value?.lessons || [], index = rows.findIndex(row => String(row.id) === String(id)), target = rows[index + direction]
+  if (!target) return
+  dragging.value = { kind, id: String(id) }; return dropItem(kind, target.id)
+}
 /**
  * 数据；通过 ref 建立。
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
@@ -132,7 +156,7 @@ async function load(preferred = activeId.value || String(route.query.section || 
  * 更新的响应式状态包括 activeId、search；渲染由 Vue 的依赖跟踪触发。
  * @param section 区块；默认值、解构字段与可选参数见函数签名。
  */
-function select(section) { activeId.value = section.id; search.value = ''; router.replace({ query: { section: section.id } }) }
+function select(section) { activeId.value = section.id; search.value = ''; router.replace({ query: { ...route.query, section: section.id }, hash: route.hash }) }
 /**
  * 打开区块。
  * 主要协作：Object.assign、sections.value.at。
@@ -151,6 +175,7 @@ function openSection(section = null) {
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
 async function saveSection() {
+  if (busy.value || !canEdit.value) return
   busy.value = true; error.value = ''
   try {
     const saved = sectionForm.id ? await updateGrammarSection(sectionForm.id, sectionForm) : await createGrammarSection(sectionForm)
@@ -166,9 +191,10 @@ async function saveSection() {
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
 async function removeSection(section) {
-  if (section.lessons.length || !window.confirm(`删除空章节「${section.title}」？`)) return
-  try { await deleteGrammarSection(section.id); await load(''); notice.value = '章节已删除。' }
-  catch (cause) { error.value = errorMessage(cause) }
+  if (busy.value || !canEdit.value || !await confirmDialog.value.ask(`确定删除章节「${section.title}」及其全部 ${section.lessons.length} 个课时？此操作无法撤销。`, { danger: true, confirmText: '删除章节及课时' })) return
+  busy.value = true; error.value = ''; notice.value = ''
+  try { await deleteGrammarSection(section.id); await load(activeId.value === section.id ? '' : activeId.value); await router.replace({ query: { ...route.query, section: activeId.value || undefined }, hash: route.hash }); notice.value = '章节及其课时已删除。' }
+  catch (cause) { error.value = errorMessage(cause) } finally { busy.value = false }
 }
 /**
  * 保存Course。
@@ -178,6 +204,7 @@ async function removeSection(section) {
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
 async function saveCourse() {
+  if (busy.value || !canEdit.value) return
   busy.value = true; error.value = ''
   try {
     await updateGrammarCourse({ ...courseForm, roadmapMarkdown: courseEditor.value?.getMarkdown?.() ?? courseForm.roadmapMarkdown })
@@ -193,6 +220,8 @@ async function saveCourse() {
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
 async function toggleCourse() {
+  if (busy.value || !canPublish.value || !data.value?.course) return
+  if (!await confirmDialog.value.ask(data.value.course.publishStatus === 'PUBLISHED' ? '撤回公开课程？课时内容保留。' : '确认发布语法课程？已发布课时将可在前台阅读。')) return
   busy.value = true; error.value = ''
   try {
     await setGrammarCoursePublished(data.value.course.publishStatus !== 'PUBLISHED')
@@ -209,6 +238,7 @@ async function toggleCourse() {
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
 async function toggleLesson(lesson) {
+  if (busy.value || !canPublish.value || !await confirmDialog.value.ask(`${lesson.publishStatus === 'PUBLISHED' ? '撤回' : '发布'}课时「${lesson.title}」？其他课时不受影响。`)) return
   busy.value = true; error.value = ''
   try { await setGrammarLessonPublished(lesson.id, lesson.publishStatus !== 'PUBLISHED'); await load(); notice.value = '课时状态已更新。' }
   catch (cause) { error.value = errorMessage(cause) }
@@ -222,9 +252,10 @@ async function toggleLesson(lesson) {
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
 async function removeLesson(lesson) {
-  if (!window.confirm(`确定删除课时「${lesson.title}」？`)) return
+  if (busy.value || !canEdit.value || !await confirmDialog.value.ask(`确定删除课时「${lesson.title}」？此操作无法撤销。`, { danger: true, confirmText: '删除课时' })) return
+  busy.value = true; error.value = ''; notice.value = ''
   try { await deleteGrammarLesson(lesson.id); await load(); notice.value = '课时已删除。' }
-  catch (cause) { error.value = errorMessage(cause) }
+  catch (cause) { error.value = errorMessage(cause) } finally { busy.value = false }
 }
 
 /**
@@ -235,9 +266,41 @@ load()
 </script>
 
 <template>
-  <main class="grammar-admin"><nav><RouterLink :to="accountPath('/english/manage')">英语工作台</RouterLink> › 语法教程</nav><header><div><p class="public-eyebrow">GRAMMAR CURRICULUM · 固定单课程</p><h1>{{ data?.course.title || '英语语法完整教程' }}</h1><p>{{ sections.length }} 章 · 左侧选择章节，右侧管理直属课节。</p></div><div><button @click="courseEditing = true">课程信息</button><button :disabled="busy" @click="toggleCourse">{{ data?.course.publishStatus === 'PUBLISHED' ? '撤回课程' : '发布课程' }}</button><RouterLink v-if="activeId" :to="{ path: accountPath('/english/manage/grammar/lesson/new'), query: { section: activeId } }">＋ 新建课时</RouterLink></div></header><p v-if="error" class="grammar-admin__error" role="alert">{{ error }}</p><p v-if="notice" class="grammar-admin__notice" role="status">{{ notice }}</p><p v-if="loading">正在读取课程…</p><div v-else class="grammar-admin__layout"><aside><header><div><small>01 · SECTIONS</small><h2>课程章节</h2></div><button aria-label="新增章节" @click="openSection()">＋ 新建</button></header><article v-for="section in sections" :key="section.id" :class="{ active: activeId === section.id }"><button class="grammar-admin__section-select" @click="select(section)"><strong>{{ section.title }}</strong><small>{{ section.lessons.length }} 个课时</small></button><div><button @click="openSection(section)">编辑</button><button v-if="!section.lessons.length" @click="removeSection(section)">删除</button></div></article></aside><section class="grammar-admin__lessons"><header><div><small>02 · LESSONS</small><h2>{{ active?.title || '请选择章节' }}</h2></div><PublicSearch v-model="search" label="搜索课时" placeholder="搜索当前章节课时…" /></header><p v-if="!active" class="grammar-admin__empty">先选择左侧章节。</p><p v-else-if="!lessons.length" class="grammar-admin__empty">当前章节暂无课时。</p><article v-for="lesson in lessons" :key="lesson.id"><span>{{ lesson.slug }}</span><div><h3>{{ lesson.title }}</h3><p>{{ lesson.summary }}</p></div><small>{{ lesson.publishStatus === 'PUBLISHED' ? '已发布' : lesson.publishStatus === 'WITHDRAWN' ? '已撤回' : '草稿' }}</small><div><RouterLink :to="accountPath(`/english/manage/grammar/lesson/${lesson.id}`)">编辑</RouterLink><button :disabled="busy" @click="toggleLesson(lesson)">{{ lesson.publishStatus === 'PUBLISHED' ? '撤回' : '发布' }}</button><button @click="removeLesson(lesson)">删除</button></div></article></section></div>
+  <main class="grammar-admin">
+    <nav aria-label="面包屑"><RouterLink to="/english/manage">英语工作台</RouterLink> / <span aria-current="page">语法教程课程结构</span></nav>
+    <header><div><p class="public-eyebrow">课程结构 · 两级目录</p><h1>{{ data?.course.title || '英语语法完整教程' }}</h1><p>{{ sections.length }} 章 · 左侧管理章节，右侧管理直属课时。同级支持拖动或上移、下移。</p></div><div>
+      <button v-if="canEdit" :disabled="busy || loading" @click="courseEditing = true">课程信息</button>
+      <button v-if="canPublish" :disabled="busy || loading || !data" @click="toggleCourse">{{ data?.course.publishStatus === 'PUBLISHED' ? '撤回课程' : '发布课程' }}</button>
+      <RouterLink v-if="canEdit && activeId && !busy" :to="{ path: '/english/manage/grammar/lesson/new', query: { section: activeId } }">新建课时</RouterLink>
+    </div></header>
+    <p v-if="error" class="grammar-admin__error" role="alert">{{ error }}</p><p v-if="notice" class="grammar-admin__notice" role="status">{{ notice }}</p>
+    <p v-if="search.trim()" role="status">搜索期间暂停课时排序，清空搜索后可调整顺序。</p>
+    <p v-if="loading" role="status">正在读取课程…</p>
+    <div v-else class="grammar-admin__layout">
+      <aside aria-label="课程章节"><header><div><small>01 · 章节</small><h2>课程章节</h2></div><button v-if="canEdit" :disabled="busy" aria-label="新增章节" @click="openSection()">＋ 新建</button></header>
+        <p class="grammar-admin__hint">同级可拖动排序，删除章节会同时删除其下全部课时。</p>
+        <article v-for="(section,index) in sections" :key="section.id" :class="{ active: activeId === section.id, 'is-drop-target': dropTarget==='section:'+section.id }" :draggable="canEdit && !busy" @dragstart="startDrag($event,'section',section.id)" @dragend="endDrag" @dragover.prevent="dropTarget='section:'+section.id" @drop.prevent="dropItem('section',section.id)">
+          <span v-if="canEdit" class="grammar-admin__drag" aria-hidden="true">⠿</span>
+          <button class="grammar-admin__section-select" :aria-current="activeId===section.id?'true':undefined" @click="select(section)"><strong>{{section.title}}</strong><small>{{section.lessons.length}} 个课时</small></button>
+          <div v-if="canEdit" class="grammar-admin__section-actions">
+            <button :aria-label="'上移章节 '+section.title" :disabled="busy || index===0" @click="moveItem('section',section.id,-1)">上移</button><button :aria-label="'下移章节 '+section.title" :disabled="busy || index===sections.length-1" @click="moveItem('section',section.id,1)">下移</button>
+            <button :disabled="busy" @click="openSection(section)">编辑</button><button class="grammar-admin__delete" :disabled="busy" :aria-label="'删除章节 '+section.title" @click="removeSection(section)">删除</button>
+          </div>
+        </article>
+        <p v-if="!sections.length" class="grammar-admin__empty">暂无章节，点击“新建”添加。</p>
+      </aside>
+      <section class="grammar-admin__lessons"><header><div><small>02 · 课时</small><h2>{{active?.title || '请选择章节'}}</h2></div><PublicSearch v-model="search" label="搜索课时" placeholder="搜索当前章节课时…" /></header>
+        <p class="grammar-admin__hint">课时可独立编辑、预览、发布、撤回和删除。删除不会影响其他章节。</p>
+        <p v-if="!active" class="grammar-admin__empty">先选择或新建左侧章节。</p><p v-else-if="!lessons.length" class="grammar-admin__empty">{{search.trim() ? '没有匹配的课时。' : '当前章节暂无课时。'}}</p>
+        <article v-for="(lesson,index) in lessons" :key="lesson.id" :class="{'is-drop-target':dropTarget==='lesson:'+lesson.id}" :draggable="canEdit && !busy && !search.trim()" @dragstart="startDrag($event,'lesson',lesson.id)" @dragend="endDrag" @dragover.prevent="dropTarget='lesson:'+lesson.id" @drop.prevent="dropItem('lesson',lesson.id)">
+          <span class="grammar-admin__drag" aria-hidden="true">{{String(index+1).padStart(2,'0')}}</span><div><h3>{{lesson.title}}</h3><p>{{lesson.summary}}</p></div><small>{{lesson.publishStatus==='PUBLISHED' ? '已发布' : lesson.publishStatus==='WITHDRAWN' ? '已撤回' : '草稿'}}</small>
+          <div><template v-if="canEdit"><button :disabled="busy || !!search.trim() || index===0" :aria-label="'上移课时 '+lesson.title" @click="moveItem('lesson',lesson.id,-1)">上移</button><button :disabled="busy || !!search.trim() || index===lessons.length-1" :aria-label="'下移课时 '+lesson.title" @click="moveItem('lesson',lesson.id,1)">下移</button><RouterLink :to="'/english/manage/grammar/lesson/'+lesson.id">编辑</RouterLink></template><RouterLink v-if="lesson.publishStatus==='PUBLISHED' && data.course.publishStatus==='PUBLISHED'" :to="'/english/grammar/'+lesson.slug">预览</RouterLink><button v-if="canPublish" :disabled="busy" @click="toggleLesson(lesson)">{{lesson.publishStatus==='PUBLISHED'?'撤回':'发布'}}</button><button v-if="canEdit" class="grammar-admin__delete" :disabled="busy" :aria-label="'删除课时 '+lesson.title" @click="removeLesson(lesson)">删除</button></div>
+        </article>
+      </section>
+    </div>
+    <AppConfirmDialog ref="confirmDialog" />
     <div v-if="sectionEditing" class="grammar-admin__overlay" @click.self="sectionEditing = false"><form class="grammar-admin__dialog" role="dialog" aria-modal="true" aria-label="编辑语法章节" @submit.prevent="saveSection"><h2>{{ sectionForm.id ? '编辑章节' : '新建章节' }}</h2><label>章节名称<input v-model="sectionForm.title" required maxlength="200"></label><label>顺序<input v-model.number="sectionForm.sortOrder" type="number"></label><div><button type="button" @click="sectionEditing = false">取消</button><button type="submit" :disabled="busy">保存</button></div></form></div>
-    <div v-if="courseEditing" class="grammar-admin__overlay" @click.self="courseEditing = false"><form class="grammar-admin__dialog grammar-admin__dialog--course" role="dialog" aria-modal="true" aria-label="编辑课程信息" @submit.prevent="saveCourse"><h2>课程信息</h2><label>课程标题<input v-model="courseForm.title" required></label><label>副标题<input v-model="courseForm.subtitle"></label><label>课程摘要<textarea v-model="courseForm.summary" rows="3"></textarea></label><label>课程介绍<textarea v-model="courseForm.introduction" rows="4"></textarea></label><div><span>课程路线</span><MarkdownEditor :editor-context="loading ? null : editorContext(data?.course?.id || 'course', 'roadmapMarkdown', data?.course?.rowVersion, data?.course?.roadmapMarkdown || '')" ref="courseEditor" v-model="courseForm.roadmapMarkdown" /></div><div><button type="button" @click="courseEditing = false">取消</button><button type="submit" :disabled="busy">保存</button></div></form></div>
+    <div v-if="courseEditing" class="grammar-admin__overlay" @click.self="courseEditing = false"><form class="grammar-admin__dialog grammar-admin__dialog--course" role="dialog" aria-modal="true" aria-label="编辑课程信息" @submit.prevent="saveCourse"><h2>课程信息</h2><label>课程标题<input v-model="courseForm.title" required></label><label>副标题<input v-model="courseForm.subtitle"></label><label>课程摘要<textarea v-model="courseForm.summary" rows="3"></textarea></label><label>课程介绍<textarea v-model="courseForm.introduction" rows="4"></textarea></label><div><span>课程路线</span><MarkdownEditor :outline-default="false" :editor-context="loading ? null : editorContext(data?.course?.id || 'course', 'roadmapMarkdown', data?.course?.rowVersion, data?.course?.roadmapMarkdown || '')" ref="courseEditor" v-model="courseForm.roadmapMarkdown" /></div><div><button type="button" @click="courseEditing = false">取消</button><button type="submit" :disabled="busy">保存</button></div></form></div>
   </main>
 </template>
 
@@ -468,4 +531,5 @@ load()
 .grammar-admin__lessons>header .public-search{width:min(100%,280px)}
 .grammar-admin__section-select strong{white-space:normal;overflow-wrap:anywhere}
 @media(max-width:750px){.grammar-admin__layout>aside>header,.grammar-admin__lessons>header{flex-wrap:wrap}.grammar-admin__lessons>header .public-search{width:100%}.grammar-admin__layout aside article>div{flex-wrap:wrap}.grammar-admin h1{font-size:30px;line-height:36px}}
+.grammar-admin__layout aside article{flex-wrap:wrap;gap:8px}.grammar-admin__section-actions{width:100%;justify-content:flex-end}.grammar-admin__hint{padding:12px 16px;margin:0;color:var(--text-muted);font-size:12px;line-height:16px}.grammar-admin__drag{color:var(--text-muted);cursor:grab}.grammar-admin__layout .is-drop-target{outline:2px solid var(--primary);outline-offset:-2px}.grammar-admin__layout button.grammar-admin__delete{color:var(--danger,#ad493e)}.grammar-admin__lessons article>div:last-child{flex-wrap:wrap}
 </style>

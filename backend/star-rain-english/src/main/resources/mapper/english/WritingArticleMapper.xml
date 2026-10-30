@@ -49,7 +49,7 @@
  <!--
    条件 state != null and state != '' 成立时才输出此段 SQL。
  -->
- <if test="state != null and state != ''">AND a.state=#{state}</if>
+ <if test="state != null and state != ''"><choose><when test="state == 'PUBLISHED'">AND a.visibility='PUBLIC' AND a.state='COMPLETED'</when><otherwise>AND a.state=#{state} AND a.visibility='PRIVATE'</otherwise></choose></if>
  <!--
    条件 topics != null and !topics.isEmpty() 成立时才输出此段 SQL。
  -->
@@ -124,6 +124,7 @@
    复用片段：columns、public。
    绑定参数：slug；参数含义参见 Mapper 方法注释。
  -->
+ <select id="lockAny" resultType="com.starrainnotes.english.writing.article.dto.WritingArticleDto$Article">SELECT <include refid="columns"/> FROM sr_english_writing_article a WHERE a.id=#{id} AND a.deleted_at IS NULL FOR UPDATE</select>
  <select id="publicBySlug" resultType="com.starrainnotes.english.writing.article.dto.WritingArticleDto$Article">SELECT <include refid="columns"/> FROM sr_english_writing_article a WHERE a.slug=#{slug} AND <include refid="public"/></select>
  <!--
    insert：新增；新增语句。
@@ -153,7 +154,7 @@
    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
    绑定参数：state、visibility、id、owner、version；参数含义参见 Mapper 方法注释。
  -->
- <update id="status">UPDATE sr_english_writing_article SET state=#{state},visibility=#{visibility},published_at=
+ <update id="status">UPDATE sr_english_writing_article SET state=#{state},visibility=#{visibility},public_eligible=CASE WHEN #{visibility}='PUBLIC' THEN 1 ELSE public_eligible END,published_at=
     <!--
       只采用第一个成立的 when 分支；否则使用 otherwise 分支（如有）。
     -->

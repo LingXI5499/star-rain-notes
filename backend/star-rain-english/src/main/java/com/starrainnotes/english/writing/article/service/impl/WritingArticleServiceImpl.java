@@ -23,6 +23,9 @@ import com.starrainnotes.english.writing.article.dto.WritingArticleDto.*;
 import com.starrainnotes.english.writing.article.mapper.WritingArticleMapper;
 import com.starrainnotes.english.writing.article.service.WritingArticleService;
 import java.util.*;
+import com.starrainnotes.review.api.*;
+import com.starrainnotes.review.api.dto.ReviewSubmissionCommand;
+import org.springframework.beans.factory.ObjectProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +40,7 @@ public class WritingArticleServiceImpl implements WritingArticleService {
      * 协作类型：<code>WritingArticleMapper</code>。
      */
     private final WritingArticleMapper mapper;
+    private final ObjectProvider<ReviewSubmissionApi> reviewProvider;
     /**
      * 已通过元数据校验的上传信息。
      * 协作类型：<code>DocumentMetadataService</code>。
@@ -78,7 +82,7 @@ public class WritingArticleServiceImpl implements WritingArticleService {
      */
     @Override @Transactional(readOnly=true) public Page list(boolean mine,String search,String state,Long topic,Long genre,Long purpose,int page,int size) {
         Long owner=mine?owner():null;String term=search==null?"":search.trim();EnglishBodyValidator.length(term,100);
-        if(state!=null && !state.isBlank() && !List.of("DRAFT","COMPLETED").contains(state)) invalid("状态无效");
+        if(state!=null && !state.isBlank() && !List.of("DRAFT","COMPLETED","PENDING","REJECTED","PUBLISHED").contains(state)) invalid("状态无效");
         var topics=taxonomy.descendants(topic,"TOPIC");var genres=taxonomy.descendants(genre,"GENRE");var purposes=taxonomy.descendants(purpose,"PURPOSE");
         int p=Math.max(1,page),s=Math.max(1,Math.min(50,size));long total=mapper.count(owner,term,state,topics,genres,purposes);
         List<Article> rows=total==0?List.of():mapper.list(owner,term,state,topics,genres,purposes,(long)(p-1)*s,s);
@@ -134,7 +138,8 @@ public class WritingArticleServiceImpl implements WritingArticleService {
      * @return 类型为 <code>Article</code> 的处理结果
      */
     private Article save(String id,Request r,boolean historical) {
-        validate(r,historical);Article old=lock(id,r.getRowVersion());Article a=apply(r,old);
+        validate(r,historical);Article old=lock(id,r.getRowVersion());requireEditable(old);Article a=apply(r,old);
+        a.setState("DRAFT");a.setVisibility("PRIVATE");
         if("PUBLIC".equals(old.getVisibility())) { EnglishBodyValidator.requireBody(a.getBodyMarkdown()); if(!canPublish()) a.setVisibility("PRIVATE"); }
         if(!EnglishBodyValidator.hasMeaningfulText(a.getBodyMarkdown())) { a.setState("DRAFT");a.setVisibility("PRIVATE"); }
         if(mapper.update(a)!=1) conflict();if(historical)metadata.replaceSnapshot("WRITING",a.getId(),r);else metadata.replace("WRITING",a.getId(),r);changed(a.getId());return get(id);
@@ -149,7 +154,7 @@ public class WritingArticleServiceImpl implements WritingArticleService {
      * @return 类型为 <code>Article</code> 的处理结果
      */
     @Override @Transactional public Article complete(String id,Long version) {
-        Article a=lock(id,version);EnglishBodyValidator.requireBody(a.getBodyMarkdown());change(a,"COMPLETED","PRIVATE");
+        Article a=lock(id,version);requireEditable(a);EnglishBodyValidator.requireBody(a.getBodyMarkdown());change(a,"COMPLETED","PRIVATE");
         Article completed=get(id);metadata.snapshot("WRITING",a.getId(),owner(),completed,"完成写作");return completed;
     }
     /**
@@ -165,9 +170,10 @@ public class WritingArticleServiceImpl implements WritingArticleService {
      */
     @Override @Transactional public Article publish(String id,Long version,boolean publish) {
         Article a=lock(id,version);
+        if("PENDING".equals(a.getState())) invalid("请在审核中心处理待审核文章");
         if(publish) { if(!a.isPublicEligible() || !canPublish()) throw new ApiException("WRITING_PUBLISH_FORBIDDEN","只有具备发布权限的管理员原创可以公开",403);
             EnglishBodyValidator.requireBody(a.getBodyMarkdown());if(!"COMPLETED".equals(a.getState())) invalid("请先完成文章"); }
-        change(a,a.getState(),publish?"PUBLIC":"PRIVATE");Article saved=get(id);
+        change(a,publish?a.getState():"DRAFT",publish?"PUBLIC":"PRIVATE");Article saved=get(id);
         if(publish) metadata.snapshot("WRITING",a.getId(),owner(),saved,"公开原创");return saved;
     }
     /**
@@ -177,7 +183,7 @@ public class WritingArticleServiceImpl implements WritingArticleService {
      *
      * @param id 当前业务对象的数据库标识；类型为 <code>String</code>
      */
-    @Override @Transactional public void delete(String id) { Article a=lockOwned(id);if(mapper.delete(a.getId(),owner(),a.getRowVersion())!=1) conflict();changed(a.getId()); }
+    @Override @Transactional public void delete(String id) { Article a=lockOwned(id);requireEditable(a);if(mapper.delete(a.getId(),owner(),a.getRowVersion())!=1) conflict();changed(a.getId()); }
     /**
      * 修订集合处理入口。
      * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
@@ -307,6 +313,36 @@ public class WritingArticleServiceImpl implements WritingArticleService {
      * 主要协作调用：<code>actor.current</code>。
      * @return 类型为 <code>long</code> 的处理结果
      */
+
+    @Override @Transactional
+    public Article submit(String id,Long version) {
+        Article a=lock(id,version);requireEditable(a);
+        if(a.getTitle()==null || a.getTitle().isBlank() || "Untitled Article".equals(a.getTitle())) invalid("请填写文章标题");
+        EnglishBodyValidator.requireBody(a.getBodyMarkdown());
+        RevisionDto.Revision revision=metadata.snapshot("WRITING",a.getId(),owner(),get(id),"提交随笔审核");
+        reviewProvider.getObject().submit(ReviewSubmissionCommand.builder()
+            .reviewType("english.essay.publish").targetModule("ENGLISH").targetType("ESSAY")
+            .targetId(a.getId()).targetRevisionRef(Long.toString(revision.getRevisionNo()))
+            .targetDisplayName(a.getTitle()).applicantAccountId(owner()).build());
+        change(a,"PENDING","PRIVATE");return get(id);
+    }
+
+    @Override @Transactional
+    public Article cancelReview(String id,Long version) {
+        Article a=lock(id,version);
+        if(!"PENDING".equals(a.getState())) invalid("文章当前不在审核中");
+        ReviewTargetKey key=ReviewTargetKey.builder().targetModule("ENGLISH").targetType("ESSAY").targetId(a.getId()).build();
+        var pending=reviewProvider.getObject().findActivePending(key,"english.essay.publish")
+            .orElseThrow(()->new ApiException("WRITING_REVIEW_NOT_PENDING","审核已处理，请刷新文章",409));
+        reviewProvider.getObject().cancelByApplicant(pending.getReviewRequestId(),owner());
+        change(a,"DRAFT","PRIVATE");return get(id);
+    }
+
+    private static void requireEditable(Article article) {
+        if("PENDING".equals(article.getState())) invalid("审核期间不能修改或删除，请先取消送审");
+        if("PUBLIC".equals(article.getVisibility())) invalid("请先撤回已发布文章，再修改或删除");
+    }
+
     private long owner() { return actor.current().getAccountId(); }
     /**
      * 判断能否发布。

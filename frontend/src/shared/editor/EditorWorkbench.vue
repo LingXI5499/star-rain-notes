@@ -80,6 +80,8 @@ watch(
     if (value) props.adapter.shortcutTips(keys.value)
   },
 )
+let updateFrame=null
+function scheduleUpdate(){if(updateFrame!==null)return;updateFrame=requestAnimationFrame(()=>{updateFrame=null;update()})}
 let composing = false,
   menuRange = null,
   listenerHost = null,
@@ -304,7 +306,7 @@ watch(
     cleanupHost()
     listenerHost = host
     host?.addEventListener('keydown', keydown, true)
-    host?.addEventListener('keyup', update)
+    host?.addEventListener('keyup', scheduleUpdate)
     host?.addEventListener('compositionstart', compositionStart)
     host?.addEventListener('compositionend', compositionEnd)
     host?.addEventListener('pointerdown', pointer)
@@ -313,21 +315,22 @@ watch(
 )
 function cleanupHost() {
   listenerHost?.removeEventListener('keydown', keydown, true)
-  listenerHost?.removeEventListener('keyup', update)
+  listenerHost?.removeEventListener('keyup', scheduleUpdate)
   listenerHost?.removeEventListener('compositionstart', compositionStart)
   listenerHost?.removeEventListener('compositionend', compositionEnd)
   listenerHost?.removeEventListener('pointerdown', pointer)
 }
-document.addEventListener('selectionchange', update)
+document.addEventListener('selectionchange', scheduleUpdate)
 document.addEventListener('pointerdown', outside)
-window.addEventListener('resize', update)
-window.addEventListener('scroll', update, true)
+window.addEventListener('resize', scheduleUpdate)
+window.addEventListener('scroll', scheduleUpdate, true)
 onBeforeUnmount(() => {
+  if(updateFrame!==null)cancelAnimationFrame(updateFrame)
   cleanupHost()
-  document.removeEventListener('selectionchange', update)
+  document.removeEventListener('selectionchange', scheduleUpdate)
   document.removeEventListener('pointerdown', outside)
-  window.removeEventListener('resize', update)
-  window.removeEventListener('scroll', update, true)
+  window.removeEventListener('resize', scheduleUpdate)
+  window.removeEventListener('scroll', scheduleUpdate, true)
 })
 function closeHelp(event){if(help.value){help.value=false;event.stopPropagation()}}
 defineExpose({ hide, applyHeading, format, copySelection, documentTools, keys, openHelp:()=>{help.value=true} })

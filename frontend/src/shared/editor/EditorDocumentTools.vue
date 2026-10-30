@@ -311,7 +311,7 @@ onBeforeUnmount(() => {
   clearTimeout(timer)
   host?.removeEventListener('click', clicked, true)
 })
-defineExpose({ openPreview,changeMode,show,openImage,mode })
+defineExpose({ openPreview,changeMode,show,openImage,mode,syncMode:()=>{mode.value=props.adapter.mode()} })
 </script>
 <template>
   <section class="editor-document-tools" @keydown.esc="panel && ($event.stopPropagation(), panel = '')">

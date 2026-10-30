@@ -31,6 +31,10 @@ public final class VocabularyLearningModels {
      */
     @Data
     public static class Filter {
+        @Pattern(regexp = "T[0-9]{2}|^$") private String category = "";
+        @Pattern(regexp = "T[0-9]{2}-[0-9]{2}|^$") private String topic = "";
+        @Pattern(regexp = "confirmed|needs-review|unclassified|^$") private String libraryStatus = "";
+        private boolean learnableOnly;
         /**
          * 主题标识。
          * 校验规则 <code>@Positive</code>。

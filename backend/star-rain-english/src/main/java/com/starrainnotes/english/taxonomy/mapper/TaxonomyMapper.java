@@ -15,6 +15,7 @@ import org.apache.ibatis.annotations.Param;
  * 定义持久化查询与写入操作。参数名与 MyBatis 映射保持一致，业务状态判断由调用服务与 SQL 条件共同完成。
  */
 public interface TaxonomyMapper {
+    List<Long> lockCatalog();
     /**
      * 列出Taxonomy。
      *

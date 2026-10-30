@@ -7,6 +7,8 @@ import org.apache.ibatis.annotations.Param;
 
 /** All filters use bound parameters; taxonomy identities are validated by the service. */
 public interface LibraryMapper {
+    Long lockTopic(@Param("code") String code);
+    Long managedTheme(@Param("layer") String layer);
     Overview overview();
     List<Count> counts(@Param("module") String module);
     long countWords(@Param("search") String search, @Param("code") String code, @Param("status") String status, @Param("theme") Long theme);

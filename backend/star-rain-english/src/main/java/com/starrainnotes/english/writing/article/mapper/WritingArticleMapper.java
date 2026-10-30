@@ -76,6 +76,7 @@ public interface WritingArticleMapper {
      * @return 类型为 <code>Article</code> 的处理结果
      */
     Article publicBySlug(String slug);
+    Article lockAny(@Param("id") long id);
     /**
      * 写入写作Article。
      *

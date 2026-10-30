@@ -75,7 +75,7 @@ async function load(nextPage = 1) {
     if (token !== version) return
     preview.value = result; page.value = nextPage
     selection.value = { ...selection.value, expectedRevision: result.expectedRevision, previewFingerprint: result.previewFingerprint }
-    saveSelection(selection.value)
+    saveSelection(selection.value, route.query.themeId || null)
   } catch (cause) { if (token === version) { error.value = learningMessage(cause); preview.value = null } }
   finally { if (token === version) loading.value = false }
 }
@@ -86,7 +86,7 @@ async function load(nextPage = 1) {
  * @param word 单词；默认值、解构字段与可选参数见函数签名。
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
-async function remove(word) { selection.value = toggleSelected(selection.value, word.id); saveSelection(selection.value); if (publicPage(route.query.page) > 1) go(1); else await load(1) }
+async function remove(word) { selection.value = toggleSelected(selection.value, word.id); saveSelection(selection.value, route.query.themeId || null); if (publicPage(route.query.page) > 1) go(1); else await load(1) }
 /**
  * 确认当前操作。
  * 主要协作：confirmPlan、router.push、contentPath、learningMessage。
@@ -112,7 +112,7 @@ onBeforeUnmount(() => { version += 1 })
 <template>
   <main class="plan-confirm">
     <header class="plan-confirm__header">
-      <RouterLink class="plan-confirm__back" :to="contentPath('/english/vocabulary/' + selection.themeId)">← 返回词库修改选择</RouterLink>
+      <RouterLink class="plan-confirm__back" :to="contentPath(selection.themeId ? '/english/vocabulary/source/' + selection.themeId : '/english/vocabulary')">← 返回词库修改选择</RouterLink>
       <p class="public-eyebrow">YOUR LEARNING PLAN</p><h1>确认学习计划</h1><p class="plan-confirm__intro">核对待选词汇，安排学习节奏，然后开始新的计划。</p>
       <ol class="plan-confirm__steps" aria-label="创建计划步骤"><li><span>✓</span>选择词汇</li><li aria-current="step"><span>2</span>核对计划</li><li><span>3</span>开始学习</li></ol>
     </header>

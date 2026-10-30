@@ -519,6 +519,8 @@ export const updateGrammarSection = (id, payload) => put(`/admin/english/grammar
  * @returns {Promise} 请求完成后的业务数据；接口失败沿共享 HTTP 客户端的错误路径传递。
  */
 export const deleteGrammarSection = (id) => del(`/admin/english/grammar/sections/${id}`)
+export const reorderGrammarSections = ids => put('/admin/english/grammar/sections/order', { ids })
+export const reorderGrammarLessons = (sectionId, ids) => put(`/admin/english/grammar/sections/${sectionId}/lessons/order`, { ids })
 /**
  * 创建语法Lesson。
  * 请求入口：post('/admin/english/grammar/lessons')；路径参数的编码和请求体结构保持接口契约。

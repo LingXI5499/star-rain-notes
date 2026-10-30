@@ -27,6 +27,33 @@ public class EnglishLibraryService {
     private final VocabularyService vocabulary;
     private final ObjectMapper objectMapper;
 
+    /** Create a current-taxonomy word while retaining the stable identity used by study records. */
+    @Transactional
+    public com.starrainnotes.english.vocabulary.dto.VocabularyDto.Word createWord(NewWord request) {
+        if (request == null || request.getWord() == null || request.getCategory() == null || request.getTopic() == null || request.getTopic().isBlank()) {
+            throw new ApiException("ENGLISH_LIBRARY_CLASSIFICATION_INVALID", "请选择一级分类、二级主题并填写单词", 400);
+        }
+        String code = validatePath(request.getCategory(), request.getTopic());
+        if (mapper.lockTopic(code) == null) {
+            throw new ApiException("ENGLISH_LIBRARY_TOPIC_INVALID", "词汇主题不存在或已停用", 400);
+        }
+        Node topic = tree("vocabulary").stream().flatMap(parent -> parent.getChildren().stream()).filter(node -> code.equals(node.getCode())).findFirst().orElseThrow();
+        String layer = "library:" + code;
+        Long theme = mapper.managedTheme(layer);
+        if (theme == null) {
+            var source = new com.starrainnotes.english.vocabulary.dto.VocabularyDto.ThemeRequest();
+            source.setLayer(layer); source.setName(topic.getName());
+            theme = vocabulary.createTheme(source).getId();
+        }
+        request.getWord().setThemeId(theme.toString());
+        var word = vocabulary.createWord(request.getWord());
+        Classification classification = new Classification();
+        classification.setMigrationStatus("confirmed"); classification.setMigrationReason("");
+        classification.setRowVersion(mapper.lock(word.getId()).getRowVersion()); classification.setTopicCodes(List.of(code));
+        classify(word.getId(), classification);
+        return word;
+    }
+
     @Transactional(readOnly = true)
     public Page<Essay> essays(String query, String tag, String month, String genre, int page, int size) {
         String search = query == null ? "" : query.trim();
@@ -88,6 +115,8 @@ public class EnglishLibraryService {
         long total = mapper.countWords(search, code, state, theme);
         List<Word> items = mapper.words(search, code, state, ((long) page - 1) * size, size, theme);
         items.forEach(word -> word.setTopicCodes(mapper.topicCodes(word.getId())));
+        Map<Long, com.starrainnotes.english.vocabulary.dto.VocabularyDto.Word> audioWords = vocabulary.wordsByIds(items.stream().map(Word::getId).toList(), 100).stream().collect(Collectors.toMap(com.starrainnotes.english.vocabulary.dto.VocabularyDto.Word::getId, value -> value));
+        items.forEach(word -> { if (audioWords.containsKey(word.getId())) word.setAudios(audioWords.get(word.getId()).getAudios()); });
         return new Page<>(items, total, page, size, (int) Math.ceil((double) total / size));
     }
 

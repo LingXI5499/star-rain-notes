@@ -111,6 +111,12 @@ public class TaxonomyServiceImpl implements TaxonomyService {
      * @return 类型为 <code>Node</code> 的处理结果
      */
     @Override @Transactional public Node create(Node request) {
+        mapper.lockCatalog();
+        if (request != null) {
+            if (request.getSlug() == null || request.getSlug().isBlank()) request.setSlug("term-" + UUID.randomUUID());
+            if (request.getLibraryModule() == null && "VOCABULARY".equals(request.getDimension())) request.setLibraryModule("vocabulary");
+            if (request.getLibraryModule() != null && (request.getCode() == null || request.getCode().isBlank())) request.setCode(nextCode(request));
+        }
         validate(request,null); request.setId(null); request.setEnabled(true); request.setWorldBaseline(false);
         if(mapper.bySlug(request.getSlug())!=null) throw new ApiException("ENGLISH_TAXONOMY_CONFLICT","分类地址已存在",409);
         mapper.insert(request); return mapper.byId(request.getId());
@@ -125,7 +131,15 @@ public class TaxonomyServiceImpl implements TaxonomyService {
      * @return 类型为 <code>Node</code> 的处理结果
      */
     @Override @Transactional public Node update(long id,Node request) {
-        Node old=mapper.byId(id); if(old==null) invalid(); validate(request,old);
+        Node old=mapper.byId(id); if(old==null) invalid();
+        if (request != null) {
+            if (request.getSlug() == null) request.setSlug(old.getSlug());
+            if (request.getDimension() == null) request.setDimension(old.getDimension());
+            if (request.getParentId() == null) request.setParentId(old.getParentId());
+            if (request.getDescription() == null) request.setDescription(old.getDescription());
+            request.setSortOrder(old.getSortOrder());
+        }
+        validate(request,old);
         request.setId(id); request.setSlug(old.getSlug()); request.setDimension(old.getDimension()); request.setParentId(old.getParentId());
         mapper.update(request); return mapper.byId(id);
     }
@@ -144,6 +158,23 @@ public class TaxonomyServiceImpl implements TaxonomyService {
      * @param n n；类型为 <code>Node</code>
      * @param old old；类型为 <code>Node</code>
      */
+    private String nextCode(Node request) {
+        String prefix = "vocabulary".equals(request.getLibraryModule()) ? "T" : "world".equals(request.getLibraryModule()) ? "R" : "";
+        if (prefix.isEmpty()) { invalid(); }
+        if (request.getParentId() != null) {
+            Node parent = mapper.byId(request.getParentId());
+            if (parent == null || parent.getCode() == null || !request.getLibraryModule().equals(parent.getLibraryModule())) { invalid(); }
+            prefix = parent.getCode() + "-";
+        }
+        Set<String> used = new HashSet<>();
+        mapper.list(true).forEach(node -> used.add(node.getCode()));
+        for (int index = 1; index <= 99; index++) {
+            String candidate = prefix + String.format(Locale.ROOT, "%02d", index);
+            if (!used.contains(candidate)) { return candidate; }
+        }
+        throw new ApiException("ENGLISH_TAXONOMY_CAPACITY", "当前层级分类数量已达上限", 409);
+    }
+
     private void validate(Node n,Node old) {
         if (old != null && n != null) { n.setCode(old.getCode()); n.setLibraryModule(old.getLibraryModule()); }
         if (n != null && n.getLibraryModule() != null) {
